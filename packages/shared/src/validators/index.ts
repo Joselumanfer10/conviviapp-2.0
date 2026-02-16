@@ -49,9 +49,19 @@ export const joinHomeSchema = z.object({
   inviteCode: z.string().min(1, 'El código de invitación es requerido'),
 });
 
+export const updateMemberRoleSchema = z.object({
+  role: z.nativeEnum(HomeRole),
+});
+
+export const transferOwnershipSchema = z.object({
+  newAdminId: z.string().min(1, 'El ID del nuevo administrador es requerido'),
+});
+
 export type CreateHomeInput = z.infer<typeof createHomeSchema>;
 export type UpdateHomeInput = z.infer<typeof updateHomeSchema>;
 export type JoinHomeInput = z.infer<typeof joinHomeSchema>;
+export type UpdateMemberRoleInput = z.infer<typeof updateMemberRoleSchema>;
+export type TransferOwnershipInput = z.infer<typeof transferOwnershipSchema>;
 
 // ==================== EXPENSE ====================
 

@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 
 import { config } from './config';
@@ -32,6 +33,16 @@ app.use(morgan(config.isDev ? 'dev' : 'combined'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
+
+// Rate limiting global (100 requests por ventana de 15 minutos)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: { code: 'RATE_LIMIT', message: 'Demasiadas solicitudes, intenta de nuevo mas tarde' } },
+});
+app.use('/api', globalLimiter);
 
 // Health check
 app.get('/health', (_req, res) => {
