@@ -31,7 +31,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint src/",
+    "lint": "eslint src/ --ext .ts",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

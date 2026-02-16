@@ -43,6 +43,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm --filter server prisma generate
+
       - run: pnpm type-check
 
   build:
@@ -60,5 +62,7 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter server prisma generate
 
       - run: pnpm build
