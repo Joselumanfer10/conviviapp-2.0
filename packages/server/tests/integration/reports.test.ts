@@ -74,13 +74,15 @@ describe('Reports API', () => {
       expect(response.body.success).toBe(false);
     });
 
-    it('acepta mes 0 y retorna datos', async () => {
+    it('usa mes actual por defecto cuando month=0 (falsy)', async () => {
       const response = await request(app)
         .get(`/api/homes/${homeId}/reports/monthly?month=0&year=2026`)
         .set('Authorization', `Bearer ${token}`);
 
+      // month=0 es falsy en JS, por lo que parseInt("0") || default usa el mes actual
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
+      expect(response.body.data.month).toBe(new Date().getMonth() + 1);
     });
 
     it('usa mes y año actuales por defecto', async () => {
