@@ -1,0 +1,73 @@
+# ============================================
+# ConviviApp - Docker Compose Override (Desarrollo)
+# ============================================
+# Este archivo se aplica automáticamente sobre docker-compose.yml
+# cuando ejecutas: docker compose up
+#
+# Para producción sin overrides usar:
+# docker compose -f docker-compose.yml up
+
+services:
+  # ==========================================
+  # Backend - Modo desarrollo con hot reload
+  # ==========================================
+  server:
+    build:
+      context: .
+      dockerfile: packages/server/Dockerfile.dev
+    volumes:
+      # Montar código fuente para hot reload
+      - ./packages/server/src:/app/packages/server/src:ro
+      - ./packages/shared/src:/app/packages/shared/src:ro
+      # Excluir node_modules del mount
+      - /app/packages/server/node_modules
+      - /app/packages/shared/node_modules
+    environment:
+      NODE_ENV: development
+      DEBUG: 'conviviapp:*'
+    command: pnpm dev
+    healthcheck:
+      test: ['CMD-SHELL', 'node -e "require(\"http\").get(\"http://localhost:3000/health\", r => r.statusCode === 200 ? process.exit(0) : process.exit(1)).on(\"error\", () => process.exit(1))"']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # Frontend - Modo desarrollo con Vite HMR
+  # ==========================================
+  client:
+    build:
+      context: .
+      dockerfile: packages/client/Dockerfile.dev
+    volumes:
+      # Montar código fuente para hot reload
+      - ./packages/client/src:/app/packages/client/src:ro
+      - ./packages/shared/src:/app/packages/shared/src:ro
+      # Excluir node_modules del mount
+      - /app/packages/client/node_modules
+      - /app/packages/shared/node_modules
+    ports:
+      - '5173:5173'  # Vite dev server
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    command: pnpm dev --host 0.0.0.0
+    healthcheck:
+      test: ['CMD-SHELL', 'node -e "require(\"http\").get(\"http://localhost:5173\", r => r.statusCode === 200 ? process.exit(0) : process.exit(1)).on(\"error\", () => process.exit(1))"']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # Adminer - UI para base de datos (solo dev)
+  # ==========================================
+  adminer:
+    image: adminer:latest
+    container_name: conviviapp-adminer
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+    networks:
+      - conviviapp-network

@@ -1,0 +1,37 @@
+# ============================================
+# ConviviApp Server - Dockerfile (Desarrollo)
+# ============================================
+# Optimizado para hot reload y desarrollo rápido
+
+FROM node:20-bookworm-slim
+
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
+WORKDIR /app
+
+# Copiar archivos de configuración del monorepo
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/server/package.json ./packages/server/
+
+# Instalar dependencias
+RUN pnpm install --no-frozen-lockfile
+
+# Copiar código fuente
+COPY packages/shared ./packages/shared
+COPY packages/server ./packages/server
+COPY tsconfig.json ./
+
+# Build shared package
+WORKDIR /app/packages/shared
+RUN pnpm build
+
+# Generar Prisma Client
+WORKDIR /app/packages/server
+RUN pnpm prisma:generate
+
+EXPOSE 3000
+
+# Modo desarrollo con watch
+CMD ["pnpm", "dev"]
