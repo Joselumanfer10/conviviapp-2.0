@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { config } from '../config/index.js';
+import { config } from '../config';
 
 // Clase base para errores de la aplicación
 export class AppError extends Error {

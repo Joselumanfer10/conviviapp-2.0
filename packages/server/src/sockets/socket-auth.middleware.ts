@@ -16,7 +16,7 @@ export async function socketAuthMiddleware(
     }
 
     // Verificar token
-    const payload = await verifyAccessToken(token);
+    const payload = verifyAccessToken(token);
 
     if (!payload) {
       return next(new Error('Token inválido o expirado'));

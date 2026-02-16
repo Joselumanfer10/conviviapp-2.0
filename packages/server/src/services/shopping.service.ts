@@ -230,19 +230,19 @@ export const shoppingService = {
     }
 
     // Verificar que todos tienen precio
-    const itemsWithoutPrice = items.filter((i) => !i.price);
+    const itemsWithoutPrice = items.filter((i: any) => !i.price);
     if (itemsWithoutPrice.length > 0) {
       throw new ValidationError(
-        `Los siguientes items no tienen precio: ${itemsWithoutPrice.map((i) => i.name).join(', ')}`
+        `Los siguientes items no tienen precio: ${itemsWithoutPrice.map((i: any) => i.name).join(', ')}`
       );
     }
 
     // Calcular total
-    const totalAmount = items.reduce((sum, item) => sum + (item.price || 0), 0);
+    const totalAmount = items.reduce((sum: number, item: any) => sum + (item.price || 0), 0);
 
     // Generar descripción
     const expenseDescription =
-      description || `Compras: ${items.map((i) => i.name).join(', ')}`;
+      description || `Compras: ${items.map((i: any) => i.name).join(', ')}`;
 
     // Crear gasto (división igual por defecto)
     const expense = await expenseService.create(homeId, paidById, {
@@ -273,8 +273,8 @@ export const shoppingService = {
     });
 
     return items
-      .map((i) => i.category)
-      .filter((c): c is string => c !== null)
+      .map((i: { category: string | null }) => i.category)
+      .filter((c: string | null): c is string => c !== null)
       .sort();
   },
 

@@ -82,7 +82,7 @@ export const taskService = {
       orderBy: { createdAt: 'desc' },
     });
 
-    return tasks.map((task) => ({
+    return tasks.map((task: any) => ({
       ...task,
       lastAssignment: task.assignments[0] || null,
       totalAssignments: task._count.assignments,
@@ -348,9 +348,9 @@ export const taskService = {
       orderBy: { karma: 'desc' },
     });
 
-    return members.map((m, index) => ({
+    return members.map((m: any, index: number) => ({
       rank: index + 1,
-      odUserId: m.userId,
+      userId: m.userId,
       name: m.user.name,
       avatarUrl: m.user.avatarUrl,
       karma: m.karma,
@@ -371,7 +371,7 @@ export const taskService = {
     if (members.length === 0) return null;
 
     // Rotación: siguiente usuario en la lista
-    const lastIndex = members.findIndex((m) => m.userId === lastAssignedToId);
+    const lastIndex = members.findIndex((m: any) => m.userId === lastAssignedToId);
     const nextIndex = (lastIndex + 1) % members.length;
     const nextUserId = members[nextIndex].userId;
 

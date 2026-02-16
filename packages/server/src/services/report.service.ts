@@ -82,13 +82,13 @@ export const reportService = {
     }
 
     const totalAssigned = assignments.length;
-    const totalCompleted = assignments.filter((a) => a.status === 'COMPLETED').length;
+    const totalCompleted = assignments.filter((a: any) => a.status === 'COMPLETED').length;
 
     return {
       month,
       year,
       expenses: {
-        total: expenses.reduce((sum, e) => sum + e.amount, 0),
+        total: expenses.reduce((sum: number, e: any) => sum + e.amount, 0),
         count: expenses.length,
         byMember: Array.from(expensesByMember.entries()).map(([userId, data]) => ({
           userId,
@@ -109,7 +109,7 @@ export const reportService = {
         })),
       },
       karma: {
-        ranking: karmaData.map((m) => ({
+        ranking: karmaData.map((m: any) => ({
           userId: m.userId,
           name: m.user.name,
           karma: m.karma,

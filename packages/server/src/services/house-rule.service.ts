@@ -141,7 +141,7 @@ export const houseRuleService = {
     return {
       total: members.length,
       accepted: rule.acceptedBy.length,
-      members: members.map((m) => ({
+      members: members.map((m: any) => ({
         userId: m.userId,
         name: m.user.name,
         avatarUrl: m.user.avatarUrl,

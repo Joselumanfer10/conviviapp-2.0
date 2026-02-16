@@ -20,7 +20,7 @@ export const notificationService = {
     if (members.length === 0) return [];
 
     await prisma.notification.createMany({
-      data: members.map((m) => ({
+      data: members.map((m: { userId: string }) => ({
         userId: m.userId,
         title: data.title,
         body: data.body,
@@ -29,7 +29,7 @@ export const notificationService = {
     });
 
     // Emitir evento para cada usuario para notificación en tiempo real
-    for (const member of members) {
+    for (const member of members as { userId: string }[]) {
       eventBus.emit('notification:created', {
         homeId,
         userId: member.userId,
@@ -38,7 +38,7 @@ export const notificationService = {
       });
     }
 
-    return members.map((m) => m.userId);
+    return members.map((m: { userId: string }) => m.userId);
   },
 
   async findByUser(userId: string, options: { isRead?: boolean; limit?: number; offset?: number } = {}) {

@@ -332,8 +332,8 @@ export const announcementService = {
     const totalVotes = announcement.votes.length;
 
     // Construir resultados por opcion
-    const results = announcement.options.map((option, index) => {
-      const voteGroup = voteCounts.find((v) => v.optionIndex === index);
+    const results = announcement.options.map((option: string, index: number) => {
+      const voteGroup = voteCounts.find((v: { optionIndex: number; _count: { id: number } }) => v.optionIndex === index);
       const count = voteGroup ? voteGroup._count.id : 0;
 
       return {
