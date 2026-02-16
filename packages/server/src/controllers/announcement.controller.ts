@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AnnouncementType } from '@conviviapp/shared';
 import { announcementService } from '../services/announcement.service';
 import { UnauthorizedError } from '../middlewares/errorHandler';
 
@@ -37,7 +38,7 @@ export const announcementController = {
       const announcements = await announcementService.findAllByHome(
         req.homeContext.home.id,
         {
-          type: type as any,
+          type: type as AnnouncementType | undefined,
         }
       );
 

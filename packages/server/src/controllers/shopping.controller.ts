@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { ShoppingItemStatus } from '@conviviapp/shared';
 import { shoppingService } from '../services/shopping.service';
 import { UnauthorizedError } from '../middlewares/errorHandler';
 
@@ -35,7 +36,7 @@ export const shoppingController = {
       const { status, category } = req.query;
 
       const items = await shoppingService.findAllByHome(req.homeContext.home.id, {
-        status: status as any,
+        status: status as ShoppingItemStatus | undefined,
         category: category as string,
       });
 

@@ -4,7 +4,8 @@ import { DomainEvents, DomainEventName } from './domain-events';
 class TypedEventBus extends EventEmitter {
   emit<K extends DomainEventName>(event: K, payload: DomainEvents[K]): boolean {
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[EventBus] ${String(event)}`, { homeId: (payload as any).homeId });
+      const homeId = 'homeId' in payload ? payload.homeId : undefined;
+      console.log(`[EventBus] ${String(event)}`, { homeId });
     }
     return super.emit(event, payload);
   }
@@ -33,7 +34,7 @@ class TypedEventBus extends EventEmitter {
   // Suscribirse a múltiples eventos
   onMany(
     events: DomainEventName[],
-    listener: (event: DomainEventName, payload: any) => void
+    listener: (event: DomainEventName, payload: DomainEvents[DomainEventName]) => void
   ): this {
     events.forEach((event) => {
       this.on(event, (payload) => listener(event, payload));

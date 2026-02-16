@@ -30,7 +30,7 @@ export class RoomManager {
 
       // Emitir confirmación
       socket.emit('homes:joined', {
-        homeIds: memberships.map((m) => m.homeId),
+        homeIds: memberships.map((m: { homeId: string }) => m.homeId),
       });
     } catch (error) {
       console.error('[RoomManager] Error al unir a hogares:', error);
@@ -76,13 +76,13 @@ export class RoomManager {
   }
 
   // Emite un evento a todos los miembros de un hogar
-  emitToHome(homeId: string, event: string, data: any): void {
+  emitToHome(homeId: string, event: string, data: Record<string, unknown>): void {
     const roomName = this.getRoomName(homeId);
     this.io.to(roomName).emit(event, data);
   }
 
   // Emite un evento a todos los miembros excepto al que lo originó
-  emitToHomeExcept(homeId: string, excludeUserId: string, event: string, data: any): void {
+  emitToHomeExcept(homeId: string, excludeUserId: string, event: string, data: Record<string, unknown>): void {
     const roomName = this.getRoomName(homeId);
     // Obtener todos los sockets en el room
     const socketsInRoom = this.io.sockets.adapter.rooms.get(roomName);

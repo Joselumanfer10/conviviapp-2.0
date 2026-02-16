@@ -216,7 +216,7 @@ export const reservationService = {
     // Verificar que el espacio existe
     await this.findSpaceById(spaceId, homeId);
 
-    const where: any = { spaceId };
+    const where: { spaceId: string; startTime?: { gte: Date }; endTime?: { lte: Date } } = { spaceId };
 
     if (date) {
       const dayStart = new Date(date);
@@ -242,7 +242,7 @@ export const reservationService = {
 
   // Listar todas las reservas del hogar (por fecha opcional)
   async findByHome(homeId: string, date?: string) {
-    const where: any = { homeId };
+    const where: { homeId: string; startTime?: { gte: Date }; endTime?: { lte: Date } | { gte: Date } } = { homeId };
 
     if (date) {
       const dayStart = new Date(date);

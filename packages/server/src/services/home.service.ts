@@ -20,9 +20,32 @@ const generateInviteCode = (length = 8): string => {
   return code;
 };
 
+// Tipos para los formateadores basados en las queries Prisma
+interface HomeWithMembersAndCount {
+  id: string;
+  name: string;
+  description: string | null;
+  address: string | null;
+  inviteCode: string;
+  currency: string;
+  createdAt: Date;
+  updatedAt: Date;
+  members?: Array<{ userId: string; role: HomeRole }>;
+  _count?: { members: number };
+}
+
+interface MemberWithUser {
+  id: string;
+  userId: string;
+  role: HomeRole;
+  nickname: string | null;
+  joinedAt: Date;
+  user: { id: string; name: string; email: string; avatarUrl: string | null };
+}
+
 // Formatear hogar para respuesta
-const formatHomeResponse = (home: any, userId: string) => {
-  const membership = home.members?.find((m: any) => m.userId === userId);
+const formatHomeResponse = (home: HomeWithMembersAndCount, userId: string) => {
+  const membership = home.members?.find((m) => m.userId === userId);
   return {
     id: home.id,
     name: home.name,
@@ -38,7 +61,7 @@ const formatHomeResponse = (home: any, userId: string) => {
 };
 
 // Formatear miembro para respuesta
-const formatMemberResponse = (member: any, currentUserId: string) => ({
+const formatMemberResponse = (member: MemberWithUser, currentUserId: string) => ({
   id: member.id,
   userId: member.userId,
   name: member.user.name,
@@ -96,7 +119,7 @@ export const homeService = {
       orderBy: { joinedAt: 'desc' },
     });
 
-    return memberships.map((m) => ({
+    return memberships.map((m: any) => ({
       id: m.home.id,
       name: m.home.name,
       description: m.home.description,
@@ -127,7 +150,7 @@ export const homeService = {
       throw new NotFoundError('Hogar no encontrado');
     }
 
-    const membership = home.members.find((m) => m.userId === userId);
+    const membership = home.members.find((m: any) => m.userId === userId);
 
     return {
       id: home.id,
@@ -139,7 +162,7 @@ export const homeService = {
       defaultSplitMode: home.defaultSplitMode,
       taskRotationEnabled: home.taskRotationEnabled,
       myRole: membership?.role,
-      members: home.members.map((m) => formatMemberResponse(m, userId)),
+      members: home.members.map((m: any) => formatMemberResponse(m, userId)),
       createdAt: home.createdAt,
       updatedAt: home.updatedAt,
     };
@@ -197,7 +220,7 @@ export const homeService = {
     }
 
     // Verificar si ya es miembro
-    const existingMembership = home.members.find((m) => m.userId === userId);
+    const existingMembership = home.members.find((m: any) => m.userId === userId);
 
     if (existingMembership) {
       throw new ConflictError('Ya eres miembro de este hogar');
@@ -254,11 +277,11 @@ export const homeService = {
     // Verificar si es el único admin
     if (membership.role === HomeRole.ADMIN) {
       const otherAdmins = membership.home.members.filter(
-        (m) => m.role === HomeRole.ADMIN && m.userId !== userId
+        (m: any) => m.role === HomeRole.ADMIN && m.userId !== userId
       );
 
       if (otherAdmins.length === 0) {
-        const otherMembers = membership.home.members.filter((m) => m.userId !== userId);
+        const otherMembers = membership.home.members.filter((m: any) => m.userId !== userId);
 
         if (otherMembers.length > 0) {
           throw new ForbiddenError(
@@ -294,7 +317,7 @@ export const homeService = {
       orderBy: [{ role: 'asc' }, { joinedAt: 'asc' }],
     });
 
-    return members.map((m) => formatMemberResponse(m, currentUserId));
+    return members.map((m: any) => formatMemberResponse(m, currentUserId));
   },
 
   // Cambiar rol de un miembro (solo admin)

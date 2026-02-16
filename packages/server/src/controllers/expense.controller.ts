@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { SettlementStatus } from '@conviviapp/shared';
 import { expenseService } from '../services/expense.service';
 import { settlementService } from '../services/settlement.service';
 import { UnauthorizedError } from '../middlewares/errorHandler';
@@ -187,7 +188,7 @@ export const expenseController = {
       const { status, page, limit } = req.query;
 
       const result = await settlementService.findAllByHome(req.homeContext.home.id, {
-        status: status as any,
+        status: status as SettlementStatus | undefined,
         page: page ? Number(page) : undefined,
         limit: limit ? Number(limit) : undefined,
       });

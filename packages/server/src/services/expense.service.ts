@@ -89,12 +89,12 @@ export const expenseService = {
       select: { userId: true },
     });
 
-    const memberIds = new Set(homeMembers.map((m) => m.userId));
+    const memberIds = new Set(homeMembers.map((m: { userId: string }) => m.userId));
 
     // Si no se especifican participantes, incluir a todos los miembros
     const participants = data.participants?.length
       ? data.participants
-      : homeMembers.map((m) => ({ userId: m.userId }));
+      : homeMembers.map((m: { userId: string }) => ({ userId: m.userId }));
 
     // Validar que todos los participantes son miembros
     for (const p of participants) {
@@ -109,7 +109,7 @@ export const expenseService = {
     const shares = calculateShares(data.amount, splitMode, participants);
 
     // Transacción: crear gasto y participantes
-    const expense = await prisma.$transaction(async (tx) => {
+    const expense = await prisma.$transaction(async (tx: any) => {
       const created = await tx.expense.create({
         data: {
           homeId,
@@ -255,13 +255,13 @@ export const expenseService = {
 
       const participants = data.participants?.length
         ? data.participants
-        : homeMembers.map((m) => ({ userId: m.userId }));
+        : homeMembers.map((m: { userId: string }) => ({ userId: m.userId }));
 
       validateParticipants(amount, splitMode, participants);
       const shares = calculateShares(amount, splitMode, participants);
 
       // Transacción: actualizar gasto y participantes
-      return prisma.$transaction(async (tx) => {
+      return prisma.$transaction(async (tx: any) => {
         // Eliminar participantes anteriores
         await tx.expenseParticipant.deleteMany({
           where: { expenseId },
@@ -417,7 +417,7 @@ export const expenseService = {
     }
 
     // Formatear respuesta
-    return members.map((member) => {
+    return members.map((member: any) => {
       const { totalPaid, totalOwed } = balances[member.userId] || { totalPaid: 0, totalOwed: 0 };
       return {
         user: member.user,
@@ -437,15 +437,16 @@ export const expenseService = {
     const EPSILON = 0.01;
 
     // Separar deudores y acreedores
+    type BalanceEntry = { user: { id: string; name: string; avatarUrl: string | null }; totalPaid: number; totalOwed: number; balance: number };
     const debtors = balances
-      .filter((b) => b.balance < -EPSILON)
-      .map((b) => ({ ...b, remaining: Math.abs(b.balance) }))
-      .sort((a, b) => b.remaining - a.remaining);
+      .filter((b: BalanceEntry) => b.balance < -EPSILON)
+      .map((b: BalanceEntry) => ({ ...b, remaining: Math.abs(b.balance) }))
+      .sort((a: { remaining: number }, b: { remaining: number }) => b.remaining - a.remaining);
 
     const creditors = balances
-      .filter((b) => b.balance > EPSILON)
-      .map((b) => ({ ...b, remaining: b.balance }))
-      .sort((a, b) => b.remaining - a.remaining);
+      .filter((b: BalanceEntry) => b.balance > EPSILON)
+      .map((b: BalanceEntry) => ({ ...b, remaining: b.balance }))
+      .sort((a: { remaining: number }, b: { remaining: number }) => b.remaining - a.remaining);
 
     // Calcular transferencias mínimas
     let i = 0;
@@ -472,7 +473,7 @@ export const expenseService = {
     }
 
     // Enriquecer con datos de usuario
-    const userMap = new Map(balances.map((b) => [b.user.id, b.user]));
+    const userMap = new Map(balances.map((b: BalanceEntry) => [b.user.id, b.user]));
 
     return transfers.map((t) => ({
       from: userMap.get(t.from),

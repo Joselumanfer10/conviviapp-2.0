@@ -110,10 +110,17 @@ export function calculateBalances(
 
 /**
  * Divide un gasto en partes iguales entre los participantes.
+ * El primer participante absorbe el centavo restante por redondeo.
  */
 export function splitEqual(amount: number, participantIds: string[]): Array<{ userId: string; share: number }> {
-  const share = roundToTwoDecimals(amount / participantIds.length);
-  return participantIds.map((userId) => ({ userId, share }));
+  const count = participantIds.length;
+  const baseShare = Math.floor((amount * 100) / count) / 100;
+  const remainder = roundToTwoDecimals(amount - baseShare * count);
+
+  return participantIds.map((userId, index) => ({
+    userId,
+    share: index === 0 ? roundToTwoDecimals(baseShare + remainder) : baseShare,
+  }));
 }
 
 /**
@@ -174,8 +181,9 @@ export function formatDate(date: Date | string, locale = 'es-ES'): string {
 
 /**
  * Formatea una fecha relativa (hace X tiempo).
+ * Nota: actualmente solo soporta español. Para multi-idioma usar Intl.RelativeTimeFormat.
  */
-export function formatRelativeDate(date: Date | string, locale = 'es-ES'): string {
+export function formatRelativeDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();

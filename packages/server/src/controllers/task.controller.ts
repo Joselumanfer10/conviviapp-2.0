@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { TaskStatus } from '@conviviapp/shared';
 import { taskService } from '../services/task.service';
 import { UnauthorizedError } from '../middlewares/errorHandler';
 
@@ -136,7 +137,7 @@ export const taskController = {
       const { status, assignedToId, page, limit } = req.query;
 
       const result = await taskService.findAssignmentsByHome(req.homeContext.home.id, {
-        status: status as any,
+        status: status as TaskStatus | undefined,
         assignedToId: assignedToId as string,
         page: page ? Number(page) : undefined,
         limit: limit ? Number(limit) : undefined,
@@ -162,7 +163,7 @@ export const taskController = {
       const { status, homeId } = req.query;
 
       const assignments = await taskService.findMyAssignments(req.user.id, {
-        status: status as any,
+        status: status as TaskStatus | undefined,
         homeId: homeId as string,
       });
 

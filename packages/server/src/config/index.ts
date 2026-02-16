@@ -11,9 +11,8 @@ export const config = {
 
   // Servidor
   port: parseInt(process.env.PORT || '3000', 10),
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
 
-  // CORS (objeto para más control)
+  // CORS
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   },

@@ -69,7 +69,7 @@ export interface Home {
   taskRotationEnabled: boolean;
   createdAt: Date;
   updatedAt: Date;
-  myRole?: string;
+  myRole?: HomeRole;
   memberCount?: number;
 }
 

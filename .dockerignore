@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build artifacts
+**/dist
+**/build
+**/.turbo
+**/.vite
+
+# Development files
+.git
+.github
+.vscode
+.idea
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Documentation
+docs
+*.md
+!packages/*/README.md
+
+# Test files
+**/tests
+**/__tests__
+**/*.test.*
+**/*.spec.*
+**/coverage
+docker-compose.test.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

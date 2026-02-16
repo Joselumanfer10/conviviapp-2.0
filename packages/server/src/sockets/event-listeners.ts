@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { eventBus, DomainEventName } from '../events';
+import { eventBus, DomainEventName, DomainEvents } from '../events';
 
 // Mapeo de eventos de dominio a eventos de Socket.io
 // notification:created se maneja por separado (room personal, no de hogar)
@@ -70,14 +70,14 @@ const eventMapping: Partial<Record<DomainEventName, string>> = {
 export function setupEventListeners(io: Server): void {
   // Suscribirse a todos los eventos de dominio
   Object.entries(eventMapping).forEach(([domainEvent, socketEvent]) => {
-    eventBus.on(domainEvent as DomainEventName, (payload: any) => {
-      const { homeId, actorId, ...data } = payload;
-
-      if (!homeId) {
+    eventBus.on(domainEvent as DomainEventName, (payload: DomainEvents[DomainEventName]) => {
+      if (!('homeId' in payload) || !payload.homeId) {
         console.warn(`[Socket] Evento ${domainEvent} sin homeId`);
         return;
       }
 
+      const { homeId, ...data } = payload;
+      const actorId = 'actorId' in data ? data.actorId : undefined;
       const roomName = `home:${homeId}`;
 
       // Emitir a todos en el room
@@ -94,7 +94,7 @@ export function setupEventListeners(io: Server): void {
   });
 
   // Notificaciones personales - emitir a room del usuario
-  eventBus.on('notification:created', (payload: any) => {
+  eventBus.on('notification:created', (payload) => {
     const { userId, notification } = payload;
     if (!userId) return;
 

@@ -58,6 +58,15 @@ COPY --from=builder /app/packages/client/dist /usr/share/nginx/html
 COPY packages/client/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
+# Preparar directorios para usuario non-root
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx:nginx /var/run/nginx.pid
+
+USER nginx
+
 EXPOSE 80
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
