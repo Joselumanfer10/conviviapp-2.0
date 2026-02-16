@@ -3,6 +3,8 @@ import {
   createHomeSchema,
   updateHomeSchema,
   joinHomeSchema,
+  updateMemberRoleSchema,
+  transferOwnershipSchema,
 } from '@conviviapp/shared';
 import { homeController } from '../controllers/home.controller';
 import { validateBody } from '../middlewares/validate.middleware';
@@ -60,6 +62,7 @@ router.get('/:homeId/members', requireHomeMember, homeController.getMembers);
 router.patch(
   '/:homeId/members/:memberId',
   ...requireHomeAdminWithContext,
+  validateBody(updateMemberRoleSchema),
   homeController.updateMember
 );
 
@@ -74,6 +77,7 @@ router.delete(
 router.post(
   '/:homeId/transfer',
   ...requireHomeAdminWithContext,
+  validateBody(transferOwnershipSchema),
   homeController.transferOwnership
 );
 
