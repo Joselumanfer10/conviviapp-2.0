@@ -35,6 +35,7 @@ export function simplifyDebts(balances: Balance[]): Transfer[] {
     .filter((b) => Math.abs(b.amount) > EPSILON)
     .map((b) => ({ ...b }));
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     // Separar y ordenar deudores y acreedores
     const debtors = working
