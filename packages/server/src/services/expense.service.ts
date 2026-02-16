@@ -2,6 +2,7 @@ import { CreateExpenseInput, UpdateExpenseInput, SplitMode } from '@conviviapp/s
 import { prisma } from '../lib/prisma';
 import { NotFoundError, ValidationError, ForbiddenError } from '../middlewares/errorHandler';
 import { eventBus } from '../events';
+import { simplifyDebts } from '../utils/simplifyDebts';
 
 interface ParticipantInput {
   userId: string;
@@ -432,45 +433,14 @@ export const expenseService = {
   async getSuggestedTransfers(homeId: string) {
     const balances = await this.getBalances(homeId);
 
-    // Usar algoritmo de simplificación
-    const transfers: { from: string; to: string; amount: number }[] = [];
-    const EPSILON = 0.01;
-
-    // Separar deudores y acreedores
+    // Convertir a formato del algoritmo
     type BalanceEntry = { user: { id: string; name: string; avatarUrl: string | null }; totalPaid: number; totalOwed: number; balance: number };
-    const debtors = balances
-      .filter((b: BalanceEntry) => b.balance < -EPSILON)
-      .map((b: BalanceEntry) => ({ ...b, remaining: Math.abs(b.balance) }))
-      .sort((a: { remaining: number }, b: { remaining: number }) => b.remaining - a.remaining);
+    const balanceInputs = balances.map((b: BalanceEntry) => ({
+      userId: b.user.id,
+      amount: b.balance,
+    }));
 
-    const creditors = balances
-      .filter((b: BalanceEntry) => b.balance > EPSILON)
-      .map((b: BalanceEntry) => ({ ...b, remaining: b.balance }))
-      .sort((a: { remaining: number }, b: { remaining: number }) => b.remaining - a.remaining);
-
-    // Calcular transferencias mínimas
-    let i = 0;
-    let j = 0;
-
-    while (i < debtors.length && j < creditors.length) {
-      const debtor = debtors[i];
-      const creditor = creditors[j];
-      const amount = Math.min(debtor.remaining, creditor.remaining);
-
-      if (amount > EPSILON) {
-        transfers.push({
-          from: debtor.user.id,
-          to: creditor.user.id,
-          amount: Math.round(amount * 100) / 100,
-        });
-
-        debtor.remaining -= amount;
-        creditor.remaining -= amount;
-      }
-
-      if (debtor.remaining < EPSILON) i++;
-      if (creditor.remaining < EPSILON) j++;
-    }
+    const transfers = simplifyDebts(balanceInputs);
 
     // Enriquecer con datos de usuario
     const userMap = new Map(balances.map((b: BalanceEntry) => [b.user.id, b.user]));
