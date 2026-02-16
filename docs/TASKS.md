@@ -186,14 +186,14 @@ Objetivo: Verificar funcionalidad y seguridad
 
 ### 3A - Tests Backend
 - [x] 3.1 Tests de integracion: Auth (register, login, refresh, logout)
-- [ ] 3.2 Tests de integracion: Homes (CRUD, join, leave, members)
+- [x] 3.2 Tests de integracion: Homes (CRUD, join, leave, members)
 - [x] 3.3 Tests de integracion: Expenses (CRUD, balances, settlements)
-- [ ] 3.4 Tests de integracion: Tasks (CRUD, assignments, karma)
-- [ ] 3.5 Tests de integracion: Shopping (CRUD, buy, auto-expense)
+- [x] 3.4 Tests de integracion: Tasks (CRUD, assignments, karma)
+- [x] 3.5 Tests de integracion: Shopping (CRUD, buy, auto-expense)
 - [x] 3.6 Tests de integracion: Announcements (CRUD, voting)
 - [x] 3.7 Tests de integracion: Calendar, Reservations, Rules
 - [x] 3.8 Tests de integracion: Notifications, Reports
-- [ ] 3.9 Tests unitarios: simplifyDebts algorithm
+- [x] 3.9 Tests unitarios: simplifyDebts algorithm
 - [ ] 3.10 Tests unitarios: split functions
 
 ### 3B - Tests Frontend
@@ -209,7 +209,7 @@ Objetivo: Verificar funcionalidad y seguridad
 - [x] 3.18 Verificar: SQL injection prevenido (Prisma)
 - [x] 3.19 Verificar: XSS prevenido (React + sanitizacion)
 - [x] 3.20 Verificar: CORS configurado correctamente
-- [ ] 3.21 Verificar: rate limiting en auth
+- [x] 3.21 Verificar: rate limiting en auth
 - [x] 3.22 Verificar: headers de seguridad (helmet)
 - [x] 3.23 Verificar: passwords hasheados (bcrypt >= 10)
 
