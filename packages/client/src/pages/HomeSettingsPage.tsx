@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth.store';
 import {
@@ -18,6 +18,14 @@ import { Label } from '@/components/ui/label';
 import { PageTransition } from '@/components/ui/page-transition';
 import { toast } from 'sonner';
 
+interface MemberData {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export function HomeSettingsPage() {
   const { homeId } = useParams<{ homeId: string }>();
   const { user } = useAuthStore();
@@ -34,15 +42,15 @@ export function HomeSettingsPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [formInitialized, setFormInitialized] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  if (home && !formInitialized) {
-    setName(home.name || '');
-    setDescription(home.description || '');
-    setAddress(home.address || '');
-    setFormInitialized(true);
-  }
+  useEffect(() => {
+    if (home) {
+      setName(home.name || '');
+      setDescription(home.description || '');
+      setAddress(home.address || '');
+    }
+  }, [home]);
 
   if (loadingHome || loadingMembers) {
     return (
@@ -72,7 +80,10 @@ export function HomeSettingsPage() {
       { name: name.trim(), description: description.trim() || undefined, address: address.trim() || undefined },
       {
         onSuccess: () => toast.success('Hogar actualizado'),
-        onError: (err: any) => toast.error(err?.response?.data?.error?.message || 'Error al actualizar'),
+        onError: (err: unknown) => {
+          const axiosErr = err as { response?: { data?: { error?: { message?: string } } } };
+          toast.error(axiosErr?.response?.data?.error?.message || 'Error al actualizar');
+        },
       }
     );
   };
@@ -97,7 +108,10 @@ export function HomeSettingsPage() {
       { memberId, role },
       {
         onSuccess: () => toast.success('Rol actualizado'),
-        onError: (err: any) => toast.error(err?.response?.data?.error?.message || 'Error al cambiar rol'),
+        onError: (err: unknown) => {
+          const axiosErr = err as { response?: { data?: { error?: { message?: string } } } };
+          toast.error(axiosErr?.response?.data?.error?.message || 'Error al cambiar rol');
+        },
       }
     );
   };
@@ -106,21 +120,30 @@ export function HomeSettingsPage() {
     if (!window.confirm(`¿Expulsar a ${memberName}? Perderá acceso al hogar.`)) return;
     removeMemberMutation.mutate(memberId, {
       onSuccess: () => toast.success(`${memberName} expulsado`),
-      onError: (err: any) => toast.error(err?.response?.data?.error?.message || 'Error al expulsar'),
+      onError: (err: unknown) => {
+          const axiosErr = err as { response?: { data?: { error?: { message?: string } } } };
+          toast.error(axiosErr?.response?.data?.error?.message || 'Error al expulsar');
+        },
     });
   };
 
   const handleLeave = () => {
     if (!window.confirm('¿Salir del hogar? Perderás acceso a todos los datos.')) return;
     leaveHomeMutation.mutate(homeId!, {
-      onError: (err: any) => toast.error(err?.response?.data?.error?.message || 'Error al salir del hogar'),
+      onError: (err: unknown) => {
+          const axiosErr = err as { response?: { data?: { error?: { message?: string } } } };
+          toast.error(axiosErr?.response?.data?.error?.message || 'Error al salir del hogar');
+        },
     });
   };
 
   const handleDelete = () => {
     if (!window.confirm('¿ELIMINAR este hogar permanentemente? Todos los datos se perderán. Esta acción NO se puede deshacer.')) return;
     deleteHomeMutation.mutate(homeId!, {
-      onError: (err: any) => toast.error(err?.response?.data?.error?.message || 'Error al eliminar'),
+      onError: (err: unknown) => {
+          const axiosErr = err as { response?: { data?: { error?: { message?: string } } } };
+          toast.error(axiosErr?.response?.data?.error?.message || 'Error al eliminar');
+        },
     });
   };
 
@@ -230,7 +253,7 @@ export function HomeSettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {members?.map((member: any) => {
+                {(members as unknown as MemberData[])?.map((member) => {
                   const isCurrentUser = member.userId === user.id;
                   const canModify = isAdmin && !isCurrentUser && member.role !== 'ADMIN';
 

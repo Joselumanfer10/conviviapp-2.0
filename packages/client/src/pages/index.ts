@@ -14,5 +14,5 @@ export { CalendarPage } from './CalendarPage';
 export { ReservationsPage } from './ReservationsPage';
 export { RulesPage } from './RulesPage';
 export { ReportsPage } from './ReportsPage';
-export { default as NotificationsPage } from './NotificationsPage';
+export { NotificationsPage } from './NotificationsPage';
 export { HomeSettingsPage } from './HomeSettingsPage';

@@ -16,7 +16,7 @@ import {
 
 type FilterType = 'all' | 'unread' | 'read';
 
-export default function NotificationsPage() {
+export function NotificationsPage() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<FilterType>('all');
 

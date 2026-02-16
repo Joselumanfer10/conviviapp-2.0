@@ -58,10 +58,10 @@ function getNextDueDate(frequency: TaskFrequency): Date {
   return date;
 }
 
-// El backend devuelve miembros con formato aplanado: { odUserId, name, ... }
+// El backend devuelve miembros con formato aplanado: { userId, name, ... }
 interface MemberResponse {
   id: string;
-  odUserId: string;
+  userId: string;
   name: string;
   email?: string;
   avatarUrl?: string | null;
@@ -247,7 +247,7 @@ export function CreateTaskForm({ homeId, onSuccess }: CreateTaskFormProps) {
                 >
                   <option value="">Sin asignar</option>
                   {membersList.map((member) => (
-                    <option key={member.odUserId} value={member.odUserId}>
+                    <option key={member.userId} value={member.userId}>
                       {member.name}
                     </option>
                   ))}

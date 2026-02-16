@@ -52,8 +52,8 @@ export const homeService = {
     return response.data.data;
   },
 
-  async updateMemberRole(homeId: string, memberId: string, role: string): Promise<any> {
-    const response = await apiClient.patch(`/homes/${homeId}/members/${memberId}`, { role });
+  async updateMemberRole(homeId: string, memberId: string, role: string): Promise<HomeMember> {
+    const response = await apiClient.patch<ApiResponse<HomeMember>>(`/homes/${homeId}/members/${memberId}`, { role });
     return response.data.data;
   },
 

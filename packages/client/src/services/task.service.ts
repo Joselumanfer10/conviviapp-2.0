@@ -6,6 +6,14 @@ interface ApiResponse<T> {
   data: T;
 }
 
+interface KarmaEntry {
+  rank: number;
+  userId: string;
+  name: string;
+  avatarUrl: string | null;
+  karma: number;
+}
+
 export const taskService = {
   async create(homeId: string, data: CreateTaskInput): Promise<Task> {
     const response = await apiClient.post<ApiResponse<Task>>(
@@ -97,11 +105,3 @@ export const taskService = {
     return response.data.data;
   },
 };
-
-interface KarmaEntry {
-  rank: number;
-  odUserId: string;
-  name: string;
-  avatarUrl: string | null;
-  karma: number;
-}

@@ -4,8 +4,7 @@ import { staggerContainer } from '@/lib/animations';
 
 interface KarmaEntry {
   rank: number;
-  userId?: string;
-  odUserId?: string;
+  userId: string;
   name: string;
   avatarUrl?: string | null;
   karma: number;
@@ -48,7 +47,7 @@ export function KarmaRankingChart({ ranking }: KarmaRankingChartProps) {
         >
           {ranking.map((entry, index) => (
             <motion.div
-              key={entry.userId || entry.odUserId || index}
+              key={entry.userId}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1, duration: 0.3 }}

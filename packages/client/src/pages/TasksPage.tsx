@@ -18,7 +18,7 @@ import { useHomeMembers } from '@/features/homes';
 // El backend devuelve miembros con formato aplanado
 interface MemberResponse {
   id: string;
-  odUserId: string;
+  userId: string;
   name: string;
   role: string;
 }
@@ -56,7 +56,7 @@ function KarmaCard({ homeId }: { homeId: string }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {ranking.map((entry, index) => (
-          <div key={entry.odUserId} className="flex items-center gap-3">
+          <div key={entry.userId} className="flex items-center gap-3">
             <span className="text-lg font-bold w-6 text-center">
               {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
             </span>
@@ -168,7 +168,7 @@ function AssignTaskModal({
               >
                 <option value="">Seleccionar miembro</option>
                 {membersList.map((m) => (
-                  <option key={m.odUserId} value={m.odUserId}>
+                  <option key={m.userId} value={m.userId}>
                     {m.name}
                   </option>
                 ))}
