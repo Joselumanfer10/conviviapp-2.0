@@ -61,7 +61,56 @@ Perfil Principal:
 
 ---
 
-## 2. MÓDULOS Y FUNCIONALIDADES
+## 2. EVOLUCIÓN DEL PROYECTO Y METODOLOGÍA
+
+### 2.1 De ConviviApp v1 a v2.0
+
+ConviviApp 2.0 no nace de cero. Es el resultado de un proceso iterativo que comenzó meses antes con una primera versión del proyecto (ConviviApp v1). Esa versión inicial permitió:
+
+- **Investigar el dominio:** Analizar la competencia (Splitwise, Flatastic), entrevistar a usuarios de pisos compartidos e identificar los puntos de dolor reales.
+- **Diseñar el modelo de datos:** Definir las entidades (User, Home, Expense, Task, etc.), sus relaciones y las reglas de negocio fundamentales.
+- **Prototipar funcionalidades:** Implementar versiones iniciales de la gestión de gastos, el algoritmo de simplificación de deudas y la estructura básica del backend.
+- **Validar decisiones técnicas:** Confirmar la elección de React + Express + Prisma + PostgreSQL como stack adecuado para el problema.
+
+Sin embargo, esa primera versión acumuló deuda técnica y decisiones arquitectónicas que limitaban su escalabilidad. Se decidió reescribir el proyecto desde cero, aplicando las lecciones aprendidas:
+
+| Aspecto | v1 (Original) | v2.0 (Reescritura) |
+|---------|---------------|---------------------|
+| Estructura | Proyecto monolítico | Monorepo con paquete shared |
+| Tipos | Duplicados entre frontend y backend | Compartidos via @conviviapp/shared |
+| Validación | Validación manual parcial | Esquemas Zod compartidos en ambos lados |
+| CI/CD | Sin pipeline | GitHub Actions (lint, type-check, build) |
+| Infraestructura | Manual | Docker Compose + configuración reproducible |
+| Frontend | Componentes acoplados | Arquitectura modular por features |
+| Backend | Lógica en controladores | Capas separadas (routes → controllers → services) |
+
+### 2.2 Desarrollo Asistido con IA
+
+Este proyecto ha sido desarrollado con la asistencia de **Claude Opus 4.6** (Anthropic) a través de **Claude Code**, una herramienta CLI que permite al modelo de IA trabajar directamente sobre el código del proyecto en el entorno local del desarrollador.
+
+**Rol de la IA en el desarrollo:**
+
+| Fase | Contribución de la IA | Rol del desarrollador |
+|------|----------------------|----------------------|
+| Arquitectura | Proponer estructura de monorepo y patrones | Validar decisiones y ajustar al contexto |
+| Backend | Generar controllers, services, middlewares | Definir endpoints, revisar lógica de negocio |
+| Frontend | Generar componentes, hooks, stores | Diseñar UX, validar flujos de usuario |
+| Infraestructura | Configurar Docker, CI/CD, Prisma | Verificar que funciona en el entorno real |
+| Debugging | Diagnosticar y proponer soluciones | Aprobar o rechazar los cambios propuestos |
+| Documentación | Redactar documentación técnica | Revisar precisión y completitud |
+
+**Metodología de trabajo:**
+
+1. El desarrollador define **qué** construir (requisitos, funcionalidades, prioridades).
+2. La IA propone **cómo** implementarlo (arquitectura, código, configuración).
+3. El desarrollador **revisa, valida y aprueba** cada cambio antes de integrarlo.
+4. Se sigue un flujo de fases (Backend → Frontend → Testing → Deploy) sin saltar etapas.
+
+Esta forma de trabajo refleja el enfoque del **Máster en Desarrollo con IA**: utilizar la inteligencia artificial como herramienta de productividad manteniendo el criterio humano en todas las decisiones críticas.
+
+---
+
+## 3. MÓDULOS Y FUNCIONALIDADES
 
 ### 2.1 Módulo: Gestión de Gastos y Deudas
 
@@ -133,9 +182,9 @@ Perfil Principal:
 
 ---
 
-## 3. ARQUITECTURA TÉCNICA
+## 4. ARQUITECTURA TÉCNICA
 
-### 3.1 Stack Tecnológico
+### 4.1 Stack Tecnológico
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -172,7 +221,7 @@ Perfil Principal:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 3.2 Justificación del Stack
+### 4.2 Justificación del Stack
 
 | Capa | Tecnología | Justificación |
 |------|------------|---------------|
@@ -188,9 +237,9 @@ Perfil Principal:
 
 ---
 
-## 4. MODELO DE DATOS
+## 5. MODELO DE DATOS
 
-### 4.1 Diagrama de Entidades
+### 5.1 Diagrama de Entidades
 
 ```
 ┌──────────┐       ┌──────────────┐       ┌──────────┐
@@ -210,7 +259,7 @@ Perfil Principal:
 └──────────┘  └──────────┘
 ```
 
-### 4.2 Schema Prisma Completo
+### 5.2 Schema Prisma Completo
 
 ```prisma
 // ==================== ENUMS ====================
@@ -526,9 +575,9 @@ model Notification {
 
 ---
 
-## 5. ALGORITMO DE SIMPLIFICACIÓN DE DEUDAS
+## 6. ALGORITMO DE SIMPLIFICACIÓN DE DEUDAS
 
-### 5.1 Concepto Fundamental
+### 6.1 Concepto Fundamental
 
 ```
 Balance = Total que pagó - Total que debía pagar
@@ -536,7 +585,7 @@ Balance = Total que pagó - Total que debía pagar
 - Balance negativo → Debe dinero (DEUDOR)
 ```
 
-### 5.2 Implementación TypeScript
+### 6.2 Implementación TypeScript
 
 ```typescript
 interface Balance {
@@ -592,7 +641,7 @@ function simplifyDebts(balances: Balance[]): Transfer[] {
 }
 ```
 
-### 5.3 Ejemplo Numérico
+### 6.3 Ejemplo Numérico
 
 ```
 GASTOS DEL MES:
@@ -626,9 +675,9 @@ Optimizado:    3 transferencias
 
 ---
 
-## 6. MVP vs VERSIÓN COMPLETA
+## 7. MVP vs VERSIÓN COMPLETA
 
-### 6.1 Features MVP (Obligatorias para TFM)
+### 7.1 Features MVP (Obligatorias para TFM)
 
 | Módulo | Features MVP |
 |--------|--------------|
@@ -640,7 +689,7 @@ Optimizado:    3 transferencias
 | **Real-time** | Sync automático con Socket.io |
 | **PWA** | Instalable, notificaciones push |
 
-### 6.2 Features v2 (Opcionales)
+### 7.2 Features v2 (Opcionales)
 
 | Feature | Prioridad |
 |---------|-----------|
@@ -653,7 +702,7 @@ Optimizado:    3 transferencias
 | Estadísticas avanzadas | Baja |
 | Multi-idioma | Baja |
 
-### 6.3 Pantallas MVP
+### 7.3 Pantallas MVP
 
 ```
 1. AUTH
@@ -687,7 +736,7 @@ Optimizado:    3 transferencias
 
 ---
 
-## 7. API REST - Endpoints MVP
+## 8. API REST - Endpoints MVP
 
 ### Auth
 ```
@@ -742,7 +791,7 @@ POST   /api/homes/:id/shopping/:sid/buy Marcar como comprado
 
 ---
 
-## 8. ESTRUCTURA DEL PROYECTO
+## 9. ESTRUCTURA DEL PROYECTO
 
 ```
 conviviapp/
@@ -806,7 +855,7 @@ conviviapp/
 
 ---
 
-## 9. PLAN DE DESARROLLO
+## 10. PLAN DE DESARROLLO
 
 ### Fase 1: Setup y Auth (Semana 1-2)
 - [ ] Configurar monorepo (pnpm + turbo)
@@ -854,7 +903,7 @@ conviviapp/
 
 ---
 
-## 10. MÉTRICAS DE ÉXITO
+## 11. MÉTRICAS DE ÉXITO
 
 ### Para validar el proyecto
 
@@ -876,7 +925,7 @@ conviviapp/
 
 ---
 
-## 11. RECURSOS Y REFERENCIAS
+## 12. RECURSOS Y REFERENCIAS
 
 ### Documentación
 - [React 18](https://react.dev/)

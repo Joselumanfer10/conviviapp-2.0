@@ -4,9 +4,23 @@ Plataforma web fullstack para la gestion integral de pisos compartidos. Digitali
 
 **Proyecto TFM** - Master en Desarrollo con IA - Big School (Director: Brais Mouredev)
 
-### Contexto del Proyecto
+### Contexto y Evolucion del Proyecto
 
-Este proyecto es la evolucion completa de una version inicial (ConviviApp v1) que se empezo a desarrollar meses atras pero que no llego a completarse. La version 2.0 parte de esa base conceptual y de las lecciones aprendidas para construir una arquitectura solida desde cero: monorepo con paquete compartido, backend estructurado por capas, frontend modular y CI/CD automatizado. El resultado es una plataforma completa y funcional lista para produccion.
+ConviviApp 2.0 es la evolucion de una primera version del proyecto que se empezo a disenar y desarrollar meses atras. Esa version inicial sirvio para definir el dominio del problema, investigar la competencia, disenar el modelo de datos y prototipar las funcionalidades principales, pero no llego a completarse como producto funcional.
+
+Con las lecciones aprendidas de esa primera iteracion, se decidio reescribir el proyecto desde cero con una arquitectura mas solida: monorepo con paquete compartido de tipos y validaciones, backend estructurado por capas, frontend modular por features, y CI/CD automatizado con GitHub Actions.
+
+### Desarrollo Asistido con IA
+
+Este proyecto ha sido desarrollado con la asistencia de **Claude Opus 4.6** (Anthropic) a traves de **Claude Code**, una herramienta CLI que permite trabajar directamente en el codigo del proyecto. La IA ha participado como copiloto en:
+
+- Diseno de la arquitectura del monorepo y estructura de carpetas
+- Generacion de codigo para backend (controllers, services, middlewares) y frontend (componentes, hooks, stores)
+- Configuracion de infraestructura (Docker, CI/CD, Prisma)
+- Revision de codigo y resolucion de errores
+- Documentacion tecnica
+
+El desarrollador ha liderado todas las decisiones de producto, arquitectura y diseno, validando y revisando cada pieza de codigo generada. La IA se ha utilizado como herramienta de productividad, alineada con el enfoque del master en Desarrollo con IA.
 
 ---
 
