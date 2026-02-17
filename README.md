@@ -4,6 +4,10 @@ Plataforma web fullstack para la gestion integral de pisos compartidos. Digitali
 
 **Proyecto TFM** - Master en Desarrollo con IA - Big School (Director: Brais Mouredev)
 
+### Contexto del Proyecto
+
+Este proyecto es la evolucion completa de una version inicial (ConviviApp v1) que se empezo a desarrollar meses atras pero que no llego a completarse. La version 2.0 parte de esa base conceptual y de las lecciones aprendidas para construir una arquitectura solida desde cero: monorepo con paquete compartido, backend estructurado por capas, frontend modular y CI/CD automatizado. El resultado es una plataforma completa y funcional lista para produccion.
+
 ---
 
 ## Problema que Resuelve
