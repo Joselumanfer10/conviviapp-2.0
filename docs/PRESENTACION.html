@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConviviApp 2.0 — TFM Presentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   RESET & CUSTOM PROPERTIES
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f0f23;
+  --bg2: #1a1a3e;
+  --bg3: #1e1e4a;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-dark: #4f46e5;
+  --accent-glow: rgba(99,102,241,0.25);
+  --accent-subtle: rgba(99,102,241,0.08);
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #06b6d4;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font-heading: 'Sora', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.progress {
+  position: fixed; top: 0; left: 0; width: 100%; height: 4px;
+  background: rgba(26,26,62,0.8); z-index: 1000;
+}
+.progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  box-shadow: 0 0 20px var(--accent-glow);
+  transition: width 0.5s var(--ease);
+}
+
+/* ============================================
+   NAV CONTROLS
+   ============================================ */
+.nav-controls {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 1.5rem;
+  z-index: 1000; padding: 0.6rem 1.5rem;
+  background: rgba(15,15,35,0.85); backdrop-filter: blur(16px);
+  border: 1px solid rgba(99,102,241,0.15); border-radius: 100px;
+}
+.nav-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);
+  color: var(--text); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; font-size: 1.1rem;
+  transition: all 0.25s ease;
+}
+.nav-btn:hover { background: var(--accent); border-color: var(--accent); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.nav-btn:disabled:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.2); }
+.slide-counter {
+  font-family: var(--font-heading); font-size: 0.85rem;
+  color: var(--text2); min-width: 60px; text-align: center;
+  font-weight: 600; letter-spacing: 0.05em;
+}
+
+/* ============================================
+   SLIDE SYSTEM
+   ============================================ */
+.deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+.slides-track {
+  display: flex; height: 100%;
+  transition: transform 0.6s var(--ease);
+  will-change: transform;
+}
+.slide {
+  min-width: 100vw; height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 4rem 6rem; position: relative; overflow: hidden;
+}
+@media (max-width: 900px) { .slide { padding: 2rem 1.5rem; } }
+
+.slide-inner {
+  max-width: 1200px; width: 100%; z-index: 2;
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.7s ease 0.15s, transform 0.7s var(--ease) 0.15s;
+}
+.slide.active .slide-inner { opacity: 1; transform: translateY(0); }
+
+/* Staggered children */
+.slide.active .anim { opacity: 1; transform: translateY(0); }
+.anim {
+  opacity: 0; transform: translateY(25px);
+  transition: opacity 0.55s ease, transform 0.55s var(--ease);
+}
+.anim:nth-child(1){transition-delay:.1s} .anim:nth-child(2){transition-delay:.2s}
+.anim:nth-child(3){transition-delay:.3s} .anim:nth-child(4){transition-delay:.35s}
+.anim:nth-child(5){transition-delay:.4s} .anim:nth-child(6){transition-delay:.5s}
+.anim:nth-child(7){transition-delay:.55s} .anim:nth-child(8){transition-delay:.6s}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1 {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+h2 {
+  font-family: var(--font-heading); font-weight: 700;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem); line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+h3 {
+  font-family: var(--font-heading); font-weight: 600;
+  font-size: clamp(1.1rem, 2vw, 1.4rem); line-height: 1.3;
+}
+p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--text2); }
+.text-accent { color: var(--accent-light); }
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-light), #a78bfa, var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   COMPONENTS
+   ============================================ */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.9rem; border-radius: 100px;
+  font-size: 0.78rem; font-weight: 600; font-family: var(--font-heading);
+  letter-spacing: 0.03em;
+}
+.badge-accent { background: rgba(99,102,241,0.15); color: var(--accent-light); border: 1px solid rgba(99,102,241,0.25); }
+.badge-success { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.badge-warning { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.badge-error { background: rgba(239,68,68,0.12); color: var(--error); border: 1px solid rgba(239,68,68,0.2); }
+
+.card {
+  background: var(--bg2); border: 1px solid rgba(99,102,241,0.1);
+  border-radius: var(--radius); padding: 1.5rem;
+}
+
+.screenshot {
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid rgba(99,102,241,0.12);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 60px var(--accent-glow);
+  max-width: 100%;
+}
+.screenshot img { width: 100%; height: auto; display: block; }
+
+.screenshot-sm {
+  border-radius: var(--radius-sm); overflow: hidden;
+  border: 1px solid rgba(99,102,241,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.screenshot-sm img { width: 100%; height: auto; display: block; }
+
+.stat-number {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3.2rem); color: var(--accent-light);
+  line-height: 1;
+}
+.stat-label { font-size: 0.85rem; color: var(--text2); margin-top: 0.3rem; }
+
+/* ============================================
+   LAYOUTS
+   ============================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.grid-2x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+@media (max-width: 900px) {
+  .grid-2, .grid-3, .grid-2x3 { grid-template-columns: 1fr; }
+}
+.flex-col { display: flex; flex-direction: column; }
+.gap-1 { gap: 0.5rem; } .gap-2 { gap: 1rem; } .gap-3 { gap: 1.5rem; } .gap-4 { gap: 2rem; }
+.center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+/* ============================================
+   SPECIAL: Comparison table
+   ============================================ */
+.comp-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.88rem; }
+.comp-table th {
+  font-family: var(--font-heading); font-weight: 600; text-align: left;
+  padding: 0.7rem 1rem; background: var(--bg2);
+  border-bottom: 2px solid rgba(99,102,241,0.2);
+}
+.comp-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.comp-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+.comp-table td {
+  padding: 0.6rem 1rem; border-bottom: 1px solid rgba(99,102,241,0.06);
+}
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table .check { color: var(--success); font-weight: 700; }
+.comp-table .cross { color: var(--error); opacity: 0.6; }
+.comp-table .highlight { color: var(--accent-light); font-weight: 600; }
+
+/* ============================================
+   SPECIAL: Flow diagram
+   ============================================ */
+.flow { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+.flow-step {
+  background: var(--bg2); border: 1px solid rgba(99,102,241,0.15);
+  border-radius: var(--radius-sm); padding: 0.6rem 1.2rem;
+  font-family: var(--font-heading); font-size: 0.85rem; font-weight: 600;
+}
+.flow-arrow { color: var(--accent); font-size: 1.2rem; }
+
+/* ============================================
+   SPECIAL: Architecture columns
+   ============================================ */
+.arch-col {
+  background: var(--bg2); border: 1px solid rgba(99,102,241,0.1);
+  border-radius: var(--radius); padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.arch-col h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+.arch-item {
+  font-size: 0.85rem; color: var(--text2); padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(99,102,241,0.06);
+}
+.arch-item:last-child { border-bottom: none; }
+
+/* ============================================
+   BACKGROUNDS
+   ============================================ */
+.bg-mesh::before {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 30%, rgba(129,140,248,0.06) 0%, transparent 70%);
+}
+.bg-glow::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Portrait in circle */
+.portrait {
+  width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--accent); object-fit: cover;
+}
+.logo-school { height: 36px; opacity: 0.9; filter: brightness(1.1); }
+
+/* Big stat hero */
+.mega-stat {
+  font-family: var(--font-heading); font-weight: 800;
+  font-size: clamp(4rem, 10vw, 8rem); line-height: 1;
+  background: linear-gradient(135deg, var(--accent-light), #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Quote */
+.quote {
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.5rem; margin: 1rem 0;
+  font-style: italic; color: var(--text2);
+  background: rgba(99,102,241,0.04);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Progress -->
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- Presentation -->
+<div class="deck">
+<div class="slides-track" id="track">
+
+<!-- ==================== SLIDE 1: PORTADA ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner center gap-3">
+    <div class="anim" style="margin-bottom:0.5rem">
+      <img src="https://thebigschool.com/wp-content/uploads/2024/05/BigSchool-Logo.svg" alt="Big School" class="logo-school">
+    </div>
+    <h1 class="anim"><span class="text-gradient">ConviviApp 2.0</span></h1>
+    <p class="anim" style="font-size:clamp(1.1rem,2vw,1.5rem);color:var(--text);font-weight:400;max-width:600px">
+      Gestion integral de pisos compartidos
+    </p>
+    <div class="anim" style="display:flex;align-items:center;gap:1rem;margin-top:1rem">
+      <img src="https://dslv9ilpbe7p1.cloudfront.net/WjfOTMqNvwBFf5eYliov2w_store_logo_image.png" alt="Brais Moure" class="portrait">
+      <div style="text-align:left">
+        <p style="color:var(--text);font-weight:500;font-size:0.95rem;margin:0">Director: Brais Moure</p>
+        <p style="font-size:0.82rem;margin:0">Master en Desarrollo de Apps con IA</p>
+      </div>
+    </div>
+    <div class="anim" style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem">
+      <img src="screenshots/autor.png" alt="Jose Luis Manzanares" class="portrait" style="width:64px;height:64px;border-color:var(--accent-light)">
+      <div style="text-align:left">
+        <p style="font-size:0.95rem;color:var(--text);font-weight:500;margin:0">Jose Luis Manzanares Fernandez</p>
+        <p style="font-size:0.82rem;margin:0">Autor — Febrero 2026</p>
+        <div style="display:flex;gap:0.8rem;margin-top:0.3rem">
+          <a href="https://www.linkedin.com/in/joseluismf/" target="_blank" style="font-size:0.78rem;color:var(--accent-light);text-decoration:none;opacity:0.85">LinkedIn</a>
+          <a href="https://github.com/Joselumanfer10" target="_blank" style="font-size:0.78rem;color:var(--accent-light);text-decoration:none;opacity:0.85">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 2: EL PROBLEMA ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-4">
+    <h2 class="anim">Compartir piso no deberia ser <span class="text-accent">tan dificil</span></h2>
+    <div class="grid-3 anim" style="margin-top:1rem">
+      <div class="card center gap-1">
+        <div class="stat-number">67-73%</div>
+        <div class="stat-label">de conflictos son por dinero</div>
+      </div>
+      <div class="card center gap-1">
+        <div class="stat-number">45%</div>
+        <div class="stat-label">siente que hace mas tareas</div>
+      </div>
+      <div class="card center gap-1">
+        <div class="stat-number">4+</div>
+        <div class="stat-label">apps sin integracion</div>
+      </div>
+    </div>
+    <div class="grid-2 anim" style="max-width:700px;margin:0 auto">
+      <div class="card center gap-1">
+        <div class="stat-number">23%</div>
+        <div class="stat-label">compras desperdiciadas</div>
+      </div>
+      <div class="card center gap-1">
+        <div class="stat-number">78%</div>
+        <div class="stat-label">salidas generan disputas</div>
+      </div>
+    </div>
+    <p class="anim" style="text-align:center;margin-top:1rem">
+      <span class="badge badge-error">El unico competidor integral (Flatastic) abandonado desde 2021</span>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 3: LA SOLUCION ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner grid-2">
+    <div class="flex-col gap-3">
+      <h2 class="anim">ConviviApp 2.0:<br><span class="text-gradient">Todo en un solo lugar</span></h2>
+      <p class="anim">La unica plataforma que unifica gestion economica, tareas domesticas y comunicacion en un ecosistema disenado para la convivencia compartida.</p>
+      <div class="anim flex-col gap-2" style="margin-top:0.5rem">
+        <span class="badge badge-accent">Publico: 18-35 anos</span>
+        <span class="badge badge-accent">~1.4M personas en Espana</span>
+      </div>
+    </div>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/landing.png" alt="Landing page"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 4: REGISTRO Y HOGARES ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim">Empieza en <span class="text-accent">segundos</span></h2>
+    <div class="flow anim">
+      <div class="flow-step">Registro</div><span class="flow-arrow">→</span>
+      <div class="flow-step">Mis hogares</div><span class="flow-arrow">→</span>
+      <div class="flow-step">Crear / Unirse</div><span class="flow-arrow">→</span>
+      <div class="flow-step">Codigo invitacion</div>
+    </div>
+    <div class="grid-3 anim">
+      <div class="screenshot-sm"><img src="screenshots/mis-hogares.png" alt="Mis hogares"></div>
+      <div class="screenshot-sm"><img src="screenshots/crear-hogar.png" alt="Crear hogar"></div>
+      <div class="screenshot-sm"><img src="screenshots/codigo-invitacion.png" alt="Codigo invitacion"></div>
+    </div>
+    <p class="anim" style="text-align:center">
+      <span class="badge badge-success">JWT con rotacion automatica de tokens</span>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 5: DASHBOARD ==================== -->
+<section class="slide bg-glow">
+  <div class="slide-inner flex-col gap-3">
+    <div style="display:flex;align-items:center;gap:1rem" class="anim">
+      <h2>Todo de <span class="text-accent">un vistazo</span></h2>
+      <span class="badge badge-success" style="font-size:0.72rem">● En vivo</span>
+    </div>
+    <p class="anim">4 KPIs personales + Grid de 9 modulos con acceso directo</p>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/dashboard.png" alt="Dashboard"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 6: GASTOS ==================== -->
+<section class="slide">
+  <div class="slide-inner grid-2">
+    <div class="flex-col gap-3">
+      <h2 class="anim">Gastos compartidos con <span class="text-gradient">simplificacion inteligente</span></h2>
+      <ul class="anim flex-col gap-2" style="list-style:none;padding:0">
+        <li>● Division configurable: iguales, porcentajes, fija</li>
+        <li>● Historial filtrable con categorias</li>
+        <li>● Panel de balances lateral</li>
+      </ul>
+      <div class="card anim center" style="max-width:340px">
+        <p style="font-size:0.82rem;font-weight:600;color:var(--text)">Algoritmo de simplificacion</p>
+        <p style="font-size:2rem;margin:0.5rem 0">5 deudas → <span style="color:var(--success);font-weight:800">2-3</span></p>
+        <p style="font-size:0.78rem">transferencias optimizadas (greedy)</p>
+      </div>
+    </div>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/gastos.png" alt="Gastos"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 7: REPORTES ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim">Datos claros para <span class="text-accent">decisiones informadas</span></h2>
+    <p class="anim">KPIs mensuales, grafica donut "Quien pago" y barras "Pagado vs Debido"</p>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/reportes.png" alt="Reportes mensuales"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 8: TAREAS ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim">Tareas domesticas con <span class="text-gradient">sistema de Karma</span></h2>
+    <div class="anim" style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center">
+      <span class="badge badge-accent">dificultad × 10 pts</span>
+      <span class="badge badge-success">bonus +5 puntualidad</span>
+      <span class="badge badge-warning">-15 por omitir</span>
+    </div>
+    <div class="grid-2 anim">
+      <div class="screenshot-sm"><img src="screenshots/tareas.png" alt="Tareas"></div>
+      <div class="screenshot-sm"><img src="screenshots/nueva-tarea.png" alt="Nueva tarea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 9: COMPRAS ==================== -->
+<section class="slide bg-glow">
+  <div class="slide-inner grid-2">
+    <div class="flex-col gap-3">
+      <h2 class="anim">Compras compartidas <span class="text-accent">en tiempo real</span></h2>
+      <ul class="anim flex-col gap-2" style="list-style:none;padding:0">
+        <li>● Anadir items con cantidad y unidades</li>
+        <li>● Sincronizacion instantanea via WebSocket</li>
+        <li>● Convertir compra en gasto compartido</li>
+      </ul>
+      <span class="badge badge-success anim">● Sync en tiempo real</span>
+    </div>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/compras.png" alt="Lista de compras"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 10: TABLON Y VOTACIONES ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim">Comunicacion <span class="text-accent">organizada</span></h2>
+    <div class="anim" style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center">
+      <span class="badge badge-accent">Anuncios</span>
+      <span class="badge badge-warning">Encuestas</span>
+      <span class="badge badge-success">Votaciones con quorum</span>
+    </div>
+    <div class="grid-2 anim">
+      <div class="screenshot-sm"><img src="screenshots/tablon.png" alt="Tablon"></div>
+      <div class="screenshot-sm"><img src="screenshots/votacion-form.png" alt="Votacion"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 11: REGLAS ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner grid-2">
+    <div class="flex-col gap-3">
+      <h2 class="anim">Normas claras, <span class="text-gradient">convivencia en paz</span></h2>
+      <div class="anim flex-col gap-2">
+        <p><strong style="color:var(--text)">7 categorias:</strong> Convivencia, Limpieza, Ruido, Visitas, Espacios, Gastos, General</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <span class="badge badge-accent">Normal</span>
+          <span class="badge badge-warning">Importante</span>
+          <span class="badge badge-error">Critica</span>
+        </div>
+        <p>Barra de aceptacion por miembros</p>
+      </div>
+    </div>
+    <div class="flex-col gap-2">
+      <div class="screenshot-sm anim"><img src="screenshots/reglas-creada.png" alt="Regla creada"></div>
+      <div class="screenshot-sm anim" style="max-width:80%"><img src="screenshots/reglas-form.png" alt="Nueva regla"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 12: RESERVAS ==================== -->
+<section class="slide">
+  <div class="slide-inner grid-2">
+    <div class="flex-col gap-3">
+      <h2 class="anim">Espacios compartidos <span class="text-accent">sin conflictos</span></h2>
+      <ul class="anim flex-col gap-2" style="list-style:none;padding:0">
+        <li>● Crear espacios: Salon, Lavadora, Terraza...</li>
+        <li>● Duracion maxima y slots configurables</li>
+        <li>● Reservas por franjas horarias</li>
+      </ul>
+    </div>
+    <div class="anim">
+      <div class="screenshot"><img src="screenshots/reservas.png" alt="Reservas"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 13: TRANSVERSALES ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim center">Detalles que <span class="text-gradient">marcan la diferencia</span></h2>
+    <div class="grid-2x3 anim">
+      <div class="card center gap-1">
+        <div style="font-size:2rem">🌙</div>
+        <h3>Dark Mode</h3>
+        <p style="font-size:0.82rem">3 opciones con persistencia</p>
+      </div>
+      <div class="card center gap-1">
+        <div style="font-size:2rem">🔔</div>
+        <h3>Notificaciones</h3>
+        <p style="font-size:0.82rem">Campana con contador</p>
+      </div>
+      <div class="card center gap-1">
+        <div style="font-size:2rem">⚡</div>
+        <h3>En Vivo</h3>
+        <p style="font-size:0.82rem">WebSocket activo</p>
+      </div>
+      <div class="card center gap-1">
+        <div style="font-size:2rem">📅</div>
+        <h3>Calendario</h3>
+        <p style="font-size:0.82rem">Vista compartida</p>
+      </div>
+      <div class="card center gap-1">
+        <div style="font-size:2rem">📱</div>
+        <h3>PWA</h3>
+        <p style="font-size:0.82rem">Instalable desde navegador</p>
+      </div>
+      <div class="card center gap-1">
+        <div style="font-size:2rem">📐</div>
+        <h3>Responsive</h3>
+        <p style="font-size:0.82rem">Adaptable a toda pantalla</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 15: ARQUITECTURA ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim center">Stack tecnologico <span class="text-accent">moderno</span></h2>
+    <div class="grid-3 anim">
+      <div class="arch-col" style="border-top:3px solid #3b82f6">
+        <h3 style="color:#60a5fa">Frontend</h3>
+        <div class="arch-item">React 18 + TypeScript</div>
+        <div class="arch-item">Vite 5</div>
+        <div class="arch-item">Tailwind CSS + shadcn/ui</div>
+        <div class="arch-item">Zustand (estado)</div>
+        <div class="arch-item">React Query v5</div>
+        <div class="arch-item">React Router v6</div>
+      </div>
+      <div class="arch-col" style="border-top:3px solid var(--accent)">
+        <h3 style="color:var(--accent-light)">Backend</h3>
+        <div class="arch-item">Node.js 20 + Express</div>
+        <div class="arch-item">Prisma 5 (ORM)</div>
+        <div class="arch-item">PostgreSQL 15</div>
+        <div class="arch-item">Socket.io (real-time)</div>
+        <div class="arch-item">JWT + Passport</div>
+        <div class="arch-item">Zod (validacion)</div>
+      </div>
+      <div class="arch-col" style="border-top:3px solid var(--success)">
+        <h3 style="color:var(--success)">Infraestructura</h3>
+        <div class="arch-item">Docker multi-stage</div>
+        <div class="arch-item">GitHub Actions CI/CD</div>
+        <div class="arch-item">pnpm + Turborepo</div>
+        <div class="arch-item">Monorepo 3 paquetes</div>
+        <div class="arch-item">shared / client / server</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 16: CALIDAD ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-4">
+    <h2 class="anim center">Calidad de <span class="text-gradient">produccion</span></h2>
+    <div class="grid-3 anim">
+      <div class="card center gap-1">
+        <div class="stat-number">130+</div>
+        <div class="stat-label">tests de integracion</div>
+      </div>
+      <div class="card center gap-1">
+        <div class="stat-number" style="font-size:clamp(1.4rem,3vw,2rem)">TypeScript</div>
+        <div class="stat-label">estricto end-to-end</div>
+      </div>
+      <div class="card center gap-1">
+        <div class="stat-number" style="font-size:clamp(1.4rem,3vw,2rem)">Zod</div>
+        <div class="stat-label">en toda la API</div>
+      </div>
+    </div>
+    <div class="grid-2 anim" style="max-width:800px;margin:0 auto">
+      <div class="card flex-col gap-2">
+        <h3 style="color:var(--error)">Seguridad</h3>
+        <p style="font-size:0.82rem">JWT rotacion + deteccion robo · bcrypt · Helmet · Rate limiting · CORS por entorno · Docker non-root</p>
+      </div>
+      <div class="card flex-col gap-2">
+        <h3 style="color:var(--success)">CI/CD</h3>
+        <p style="font-size:0.82rem">Lint (ESLint) · Type-check (tsc) · Build verificado con Turborepo — en cada push</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 17: IA ==================== -->
+<section class="slide bg-glow">
+  <div class="slide-inner flex-col gap-3 center">
+    <h2 class="anim">Claude Code como <span class="text-gradient">copiloto</span></h2>
+    <p class="anim">Desarrollado con Claude Opus 4.6 (Anthropic) via Claude Code CLI</p>
+    <div class="flow anim" style="margin:1rem 0">
+      <div class="flow-step" style="border-color:var(--info)">Desarrollador define <strong>QUE</strong></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color:var(--accent)">IA propone <strong>COMO</strong></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color:var(--success)">Desarrollador <strong>REVISA</strong></div>
+    </div>
+    <div class="anim" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center">
+      <span class="badge badge-accent">Arquitectura</span>
+      <span class="badge badge-accent">Backend</span>
+      <span class="badge badge-accent">Frontend</span>
+      <span class="badge badge-accent">Infra</span>
+      <span class="badge badge-accent">Debugging</span>
+      <span class="badge badge-accent">Docs</span>
+    </div>
+    <div class="quote anim" style="max-width:700px">
+      "Desarrollar con IA no significa delegar. Significa tomar mejores decisiones, mas rapido. Tu mantienes el criterio, la IA amplifica la ejecucion."
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 18: MVP vs IMPLEMENTADO ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <div class="anim center" style="margin-bottom:0.5rem">
+      <h2>Muy por encima de los <span class="text-accent">requisitos</span></h2>
+      <div class="mega-stat" style="margin:0.5rem 0">+180%</div>
+    </div>
+    <div class="grid-2 anim">
+      <div class="card flex-col gap-2">
+        <h3 style="color:var(--text3)">MVP requerido — 5 modulos</h3>
+        <ol style="padding-left:1.2rem;font-size:0.85rem;color:var(--text3)">
+          <li>Auth (registro, login, logout)</li>
+          <li>Hogares (crear, unirse)</li>
+          <li>Gastos (CRUD, division, balances)</li>
+          <li>Tareas (CRUD, asignar)</li>
+          <li>Lista de compras</li>
+        </ol>
+      </div>
+      <div class="card flex-col gap-2" style="border-color:rgba(99,102,241,0.3)">
+        <h3 style="color:var(--accent-light)">Implementado — 14 modulos</h3>
+        <div style="font-size:0.82rem;color:var(--text2);display:grid;grid-template-columns:1fr 1fr;gap:0.25rem 1rem">
+          <span>✓ Auth JWT avanzado</span><span>✓ Tablon anuncios</span>
+          <span>✓ Hogares + invitacion</span><span>✓ Votaciones + quorum</span>
+          <span>✓ Gastos + simplificacion</span><span>✓ Reglas del hogar</span>
+          <span>✓ Tareas + Karma</span><span>✓ Reservas espacios</span>
+          <span>✓ Compras tiempo real</span><span>✓ Reportes mensuales</span>
+          <span>✓ Calendario</span><span>✓ Dark mode + PWA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 19: DIFERENCIACION ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim center">ConviviApp vs <span class="text-accent">la competencia</span></h2>
+    <div class="anim" style="overflow-x:auto">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Funcionalidad</th><th>Splitwise</th><th>Flatastic</th><th>ConviviApp 2.0</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gastos compartidos</td><td class="check">✓</td><td class="check">✓</td><td class="highlight">✓ Simplificacion optimizada</td></tr>
+          <tr><td>Simplificacion deudas</td><td class="check">✓</td><td class="cross">✗</td><td class="highlight">✓ Algoritmo greedy</td></tr>
+          <tr><td>Tareas rotativas</td><td class="cross">✗</td><td style="color:var(--text3)">Basico</td><td class="highlight">✓ Karma + gamificacion</td></tr>
+          <tr><td>Lista compras</td><td class="cross">✗</td><td style="color:var(--text3)">Basico</td><td class="highlight">✓ Tiempo real</td></tr>
+          <tr><td>Votaciones</td><td class="cross">✗</td><td class="cross">✗</td><td class="highlight">✓ Con quorum</td></tr>
+          <tr><td>Reglas del hogar</td><td class="cross">✗</td><td class="cross">✗</td><td class="highlight">✓ Categorias + prioridades</td></tr>
+          <tr><td>Reservas espacios</td><td class="cross">✗</td><td class="cross">✗</td><td class="highlight">✓ Slots configurables</td></tr>
+          <tr><td>Reportes</td><td class="cross">✗</td><td class="cross">✗</td><td class="highlight">✓ Graficas interactivas</td></tr>
+          <tr><td>Tiempo real</td><td class="cross">✗</td><td class="cross">✗</td><td class="highlight">✓ WebSocket</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="anim" style="text-align:center">
+      <span class="badge badge-error">Flatastic abandonada desde 2021</span>
+    </p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 20: ROADMAP ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim center">El <span class="text-accent">roadmap</span></h2>
+    <div class="grid-2 anim">
+      <div class="card flex-col gap-2">
+        <h3 style="color:var(--success)">✓ Completado</h3>
+        <ul style="list-style:none;padding:0;font-size:0.88rem" class="flex-col gap-1">
+          <li style="color:var(--success)">✓ 14 modulos funcionales</li>
+          <li style="color:var(--success)">✓ 130+ tests de integracion</li>
+          <li style="color:var(--success)">✓ Docker + CI/CD</li>
+          <li style="color:var(--success)">✓ PWA instalable</li>
+          <li style="color:var(--success)">✓ Dark mode</li>
+        </ul>
+      </div>
+      <div class="card flex-col gap-2">
+        <h3 style="color:var(--accent-light)">→ Proximos pasos</h3>
+        <ul style="list-style:none;padding:0;font-size:0.88rem" class="flex-col gap-1">
+          <li style="color:var(--text2)">→ Notificaciones push</li>
+          <li style="color:var(--text2)">→ Modo offline</li>
+          <li style="color:var(--text2)">→ Deploy produccion (Railway)</li>
+          <li style="color:var(--text2)">→ Tests de frontend</li>
+          <li style="color:var(--text2)">→ Integracion Bizum</li>
+          <li style="color:var(--text2)">→ Multi-idioma</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 21: CIERRE ==================== -->
+<section class="slide bg-mesh">
+  <div class="slide-inner center gap-3" style="padding-bottom:5rem">
+    <h1 class="anim"><span class="text-gradient">ConviviApp 2.0</span></h1>
+    <p class="anim" style="font-size:clamp(1rem,2vw,1.4rem);color:var(--text)">Gestion integral de pisos compartidos</p>
+    <div class="anim" style="display:flex;align-items:center;gap:1rem;margin:1rem 0">
+      <img src="https://thebigschool.com/wp-content/uploads/2024/05/BigSchool-Logo.svg" alt="Big School" class="logo-school">
+      <span style="color:var(--text2);font-size:0.9rem">Director: Brais Moure</span>
+    </div>
+    <p class="anim" style="font-size:0.85rem;color:var(--text3)">
+      React + Vite &nbsp;|&nbsp; Node.js + Express + Prisma &nbsp;|&nbsp; PostgreSQL &nbsp;|&nbsp; Socket.io &nbsp;|&nbsp; Docker
+    </p>
+    <div class="anim" style="margin-top:1rem">
+      <img src="screenshots/autor.png" alt="Jose Luis Manzanares" class="portrait" style="width:80px;height:80px;border-color:var(--accent-light)">
+    </div>
+    <h2 class="anim" style="font-size:clamp(2rem,4vw,3rem)">
+      <span class="text-gradient">Gracias.</span>
+    </h2>
+    <p class="anim" style="color:var(--text2);font-size:0.95rem">Jose Luis Manzanares Fernandez — Febrero 2026</p>
+    <div class="anim" style="display:flex;gap:1.2rem;margin-top:0.3rem">
+      <a href="https://www.linkedin.com/in/joseluismf/" target="_blank" style="font-size:0.85rem;color:var(--accent-light);text-decoration:none">LinkedIn</a>
+      <a href="https://github.com/Joselumanfer10" target="_blank" style="font-size:0.85rem;color:var(--accent-light);text-decoration:none">GitHub</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /slides-track -->
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" aria-label="Anterior">◀</button>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
+  <button class="nav-btn" id="nextBtn" aria-label="Siguiente">▶</button>
+</div>
+
+<script>
+(function() {
+  const track = document.getElementById('track');
+  const slides = document.querySelectorAll('.slide');
+  const bar = document.getElementById('progressBar');
+  const curEl = document.getElementById('current');
+  const totalEl = document.getElementById('total');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const total = slides.length;
+  let idx = 0;
+
+  totalEl.textContent = total;
+
+  function go(n) {
+    idx = Math.max(0, Math.min(total - 1, n));
+    track.style.transform = 'translateX(-' + (idx * 100) + 'vw)';
+    bar.style.width = ((idx / (total - 1)) * 100) + '%';
+    curEl.textContent = idx + 1;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    slides.forEach(function(s, i) {
+      s.classList.toggle('active', i === idx);
+    });
+  }
+
+  go(0);
+
+  prevBtn.addEventListener('click', function() { go(idx - 1); });
+  nextBtn.addEventListener('click', function() { go(idx + 1); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  // Touch/swipe
+  var touchX = 0;
+  track.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function(e) {
+    var diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? go(idx + 1) : go(idx - 1); }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
