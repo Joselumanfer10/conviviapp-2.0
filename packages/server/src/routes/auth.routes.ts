@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // Rate limiting estricto para autenticacion
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // 5 intentos por ventana
+  max: 20, // 20 intentos por ventana
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: { code: 'RATE_LIMIT', message: 'Demasiados intentos de autenticacion, intenta de nuevo en 15 minutos' } },
@@ -18,7 +18,7 @@ const authLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hora
-  max: 3, // 3 registros por hora
+  max: 10, // 10 registros por hora
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: { code: 'RATE_LIMIT', message: 'Demasiados registros, intenta de nuevo mas tarde' } },

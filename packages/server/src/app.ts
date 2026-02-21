@@ -23,6 +23,9 @@ const io = initializeSocketServer(httpServer);
 // Inicializar subscriber de notificaciones
 initNotificationSubscriber();
 
+// Confiar en proxy (Easypanel/Traefik) para obtener IP real
+app.set('trust proxy', 1);
+
 // Middlewares globales
 app.use(helmet());
 app.use(cors({
