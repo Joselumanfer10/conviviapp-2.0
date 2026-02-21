@@ -53,9 +53,9 @@ RUN pnpm --filter @conviviapp/server deploy /app/deploy --prod
 RUN cp -r /app/packages/server/dist /app/deploy/dist
 RUN cp -r /app/packages/server/prisma /app/deploy/prisma
 
-# Regenerar Prisma Client dentro del deploy (evita copiar manualmente desde .pnpm)
+# Regenerar Prisma Client dentro del deploy usando el CLI del builder (v5.22.0)
 WORKDIR /app/deploy
-RUN npx prisma generate --schema=./prisma/schema.prisma
+RUN /app/node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
 
 # Stage 3: Runner
 FROM node:20-alpine AS runner
