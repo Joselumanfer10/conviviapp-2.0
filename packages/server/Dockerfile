@@ -4,7 +4,7 @@
 
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
@@ -22,6 +22,7 @@ RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
 FROM node:20-alpine AS builder
+RUN apk add --no-cache openssl
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
@@ -60,7 +61,7 @@ RUN set -e && \
 
 # Stage 3: Runner
 FROM node:20-alpine AS runner
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init openssl
 
 WORKDIR /app
 
