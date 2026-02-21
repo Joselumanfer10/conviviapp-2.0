@@ -33,7 +33,7 @@ COPY --from=deps /app/packages/server/node_modules ./packages/server/node_module
 # Copiar código fuente
 COPY packages/shared ./packages/shared
 COPY packages/server ./packages/server
-COPY package.json pnpm-workspace.yaml tsconfig.json ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json ./
 
 # Build shared package
 WORKDIR /app/packages/shared
@@ -43,6 +43,15 @@ RUN pnpm build
 WORKDIR /app/packages/server
 RUN pnpm prisma:generate
 RUN pnpm build
+
+# Crear paquete standalone con pnpm deploy (resuelve symlinks)
+WORKDIR /app
+RUN pnpm --filter @conviviapp/server deploy /app/deploy --prod
+
+# Copiar Prisma client generado y dist al deploy
+RUN cp -r /app/packages/server/node_modules/.prisma /app/deploy/node_modules/.prisma
+RUN cp -r /app/packages/server/dist /app/deploy/dist
+RUN cp -r /app/packages/server/prisma /app/deploy/prisma
 
 # Stage 3: Runner
 FROM node:20-alpine AS runner
@@ -56,12 +65,10 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 expressjs
 
-# Copiar solo lo necesario para producción
-COPY --from=builder /app/packages/server/dist ./dist
-COPY --from=builder /app/packages/server/prisma ./prisma
-COPY --from=builder /app/packages/server/node_modules ./node_modules
-COPY --from=builder /app/packages/shared/dist ./node_modules/@conviviapp/shared/dist
-COPY --from=builder /app/packages/shared/package.json ./node_modules/@conviviapp/shared/
+# Copiar paquete standalone completo
+COPY --from=builder /app/deploy/node_modules ./node_modules
+COPY --from=builder /app/deploy/dist ./dist
+COPY --from=builder /app/deploy/prisma ./prisma
 
 USER expressjs
 
