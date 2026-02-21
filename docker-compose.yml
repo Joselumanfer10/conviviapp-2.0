@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-conviviapp}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-conviviapp_dev}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       POSTGRES_DB: ${DB_NAME:-conviviapp}
     ports:
       - '5432:5432'
@@ -60,7 +60,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
-      DATABASE_URL: postgresql://${DB_USER:-conviviapp}:${DB_PASSWORD:-conviviapp_dev}@postgres:5432/${DB_NAME:-conviviapp}?schema=public
+      DATABASE_URL: postgresql://${DB_USER:-conviviapp}:${DB_PASSWORD:?DB_PASSWORD is required}@postgres:5432/${DB_NAME:-conviviapp}?schema=public
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
