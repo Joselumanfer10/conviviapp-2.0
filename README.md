@@ -24,6 +24,31 @@ El desarrollador ha liderado todas las decisiones de producto, arquitectura y di
 
 ---
 
+## Produccion
+
+La aplicacion esta desplegada en un VPS con Easypanel:
+
+| Servicio | URL |
+|----------|-----|
+| **Frontend** | [https://conviviapp.joseluismanzanaresfernandez.es](https://conviviapp.joseluismanzanaresfernandez.es) |
+| **Backend API** | [https://conviviapp-api.joseluismanzanaresfernandez.es](https://conviviapp-api.joseluismanzanaresfernandez.es) |
+| **Health Check** | [https://conviviapp-api.joseluismanzanaresfernandez.es/health](https://conviviapp-api.joseluismanzanaresfernandez.es/health) |
+
+Para probar con datos de ejemplo, registrate y unete a la casa con el codigo: **`CNPMNMG8`**
+
+### Infraestructura de despliegue
+
+- **VPS** con Ubuntu + Easypanel como orquestador de servicios
+- **4 servicios** independientes: PostgreSQL 15, Redis 7, Server (Node.js), Client (Nginx)
+- **Docker multi-stage** builds para optimizar tamano de imagen (deps → builder → runner)
+- **Traefik** como reverse proxy con SSL automatico via Let's Encrypt
+- **Auto-deploy** desde rama `main` via GitHub webhook
+- Migraciones de base de datos con `prisma migrate deploy`
+
+Ver [docs/DEPLOY.md](docs/DEPLOY.md) para la guia completa de despliegue.
+
+---
+
 ## Problema que Resuelve
 
 | Problema | Solucion |

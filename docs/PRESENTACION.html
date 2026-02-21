@@ -736,7 +736,63 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
   </div>
 </section>
 
-<!-- ==================== SLIDE 20: ROADMAP ==================== -->
+<!-- ==================== SLIDE 20: DESPLIEGUE ==================== -->
+<section class="slide">
+  <div class="slide-inner flex-col gap-3">
+    <h2 class="anim center">Desplegado en <span class="text-gradient">produccion</span></h2>
+    <div class="grid-3 anim">
+      <div class="arch-col" style="border-top:3px solid var(--success)">
+        <h3 style="color:var(--success)">VPS + Easypanel</h3>
+        <div class="arch-item">Ubuntu en VPS propio</div>
+        <div class="arch-item">Easypanel como orquestador</div>
+        <div class="arch-item">Traefik (reverse proxy)</div>
+        <div class="arch-item">Let's Encrypt (SSL)</div>
+      </div>
+      <div class="arch-col" style="border-top:3px solid var(--accent)">
+        <h3 style="color:var(--accent-light)">4 servicios</h3>
+        <div class="arch-item">PostgreSQL 15 (datos)</div>
+        <div class="arch-item">Redis 7 (cache/colas)</div>
+        <div class="arch-item">Server (Node.js + Express)</div>
+        <div class="arch-item">Client (Nginx + React)</div>
+      </div>
+      <div class="arch-col" style="border-top:3px solid #3b82f6">
+        <h3 style="color:#60a5fa">Docker multi-stage</h3>
+        <div class="arch-item">Stage 1: Dependencies (pnpm)</div>
+        <div class="arch-item">Stage 2: Builder (TypeScript)</div>
+        <div class="arch-item">Stage 3: Runner (produccion)</div>
+        <div class="arch-item">Auto-deploy desde main</div>
+      </div>
+    </div>
+    <div class="anim" style="display:flex;gap:1.5rem;justify-content:center;margin-top:0.5rem;flex-wrap:wrap">
+      <div class="card center gap-1" style="min-width:280px">
+        <p style="font-size:0.78rem;color:var(--text3)">Frontend</p>
+        <p style="font-size:0.9rem;color:var(--accent-light);font-family:var(--font-heading);word-break:break-all">conviviapp.joseluismanzanaresfernandez.es</p>
+      </div>
+      <div class="card center gap-1" style="min-width:280px">
+        <p style="font-size:0.78rem;color:var(--text3)">Backend API</p>
+        <p style="font-size:0.9rem;color:var(--accent-light);font-family:var(--font-heading);word-break:break-all">conviviapp-api.joseluismanzanaresfernandez.es</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 21: DEMO EN VIVO ==================== -->
+<section class="slide bg-glow">
+  <div class="slide-inner center gap-3">
+    <h2 class="anim">Pruebalo <span class="text-gradient">ahora mismo</span></h2>
+    <p class="anim" style="font-size:clamp(1rem,2vw,1.2rem);max-width:600px">Registrate y unete a una casa con datos reales para explorar todas las funcionalidades</p>
+    <div class="anim card center gap-2" style="max-width:500px;border-color:rgba(99,102,241,0.3)">
+      <p style="font-size:0.85rem;color:var(--text)">1. Entra y registrate en:</p>
+      <a href="https://conviviapp.joseluismanzanaresfernandez.es" target="_blank" style="font-size:clamp(0.9rem,1.8vw,1.1rem);color:var(--accent-light);font-family:var(--font-heading);word-break:break-all">conviviapp.joseluismanzanaresfernandez.es</a>
+      <div style="width:80%;height:1px;background:rgba(99,102,241,0.15);margin:0.5rem 0"></div>
+      <p style="font-size:0.85rem;color:var(--text)">2. Unete a la casa de prueba con el codigo:</p>
+      <div style="font-family:var(--font-heading);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:0.15em;color:var(--accent-light);background:rgba(99,102,241,0.1);padding:0.5rem 1.5rem;border-radius:var(--radius-sm);border:2px dashed rgba(99,102,241,0.3)">CNPMNMG8</div>
+      <p style="font-size:0.78rem;color:var(--text3)">Gastos, tareas, compras y mas — todo con datos de ejemplo</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 22: ROADMAP ==================== -->
 <section class="slide">
   <div class="slide-inner flex-col gap-3">
     <h2 class="anim center">El <span class="text-accent">roadmap</span></h2>
@@ -749,6 +805,8 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
           <li style="color:var(--success)">✓ Docker + CI/CD</li>
           <li style="color:var(--success)">✓ PWA instalable</li>
           <li style="color:var(--success)">✓ Dark mode</li>
+          <li style="color:var(--success)">✓ Deploy en VPS con Easypanel</li>
+          <li style="color:var(--success)">✓ HTTPS con Let's Encrypt</li>
         </ul>
       </div>
       <div class="card flex-col gap-2">
@@ -756,7 +814,6 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
         <ul style="list-style:none;padding:0;font-size:0.88rem" class="flex-col gap-1">
           <li style="color:var(--text2)">→ Notificaciones push</li>
           <li style="color:var(--text2)">→ Modo offline</li>
-          <li style="color:var(--text2)">→ Deploy produccion (Railway)</li>
           <li style="color:var(--text2)">→ Tests de frontend</li>
           <li style="color:var(--text2)">→ Integracion Bizum</li>
           <li style="color:var(--text2)">→ Multi-idioma</li>
@@ -766,7 +823,7 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
   </div>
 </section>
 
-<!-- ==================== SLIDE 21: CIERRE ==================== -->
+<!-- ==================== SLIDE 23: CIERRE ==================== -->
 <section class="slide bg-mesh">
   <div class="slide-inner center gap-3" style="padding-bottom:5rem">
     <h1 class="anim"><span class="text-gradient">ConviviApp 2.0</span></h1>
@@ -778,7 +835,11 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
     <p class="anim" style="font-size:0.85rem;color:var(--text3)">
       React + Vite &nbsp;|&nbsp; Node.js + Express + Prisma &nbsp;|&nbsp; PostgreSQL &nbsp;|&nbsp; Socket.io &nbsp;|&nbsp; Docker
     </p>
-    <div class="anim" style="margin-top:1rem">
+    <div class="anim" style="display:flex;gap:1.5rem;margin:0.8rem 0;flex-wrap:wrap;justify-content:center">
+      <a href="https://conviviapp.joseluismanzanaresfernandez.es" target="_blank" style="font-size:0.82rem;color:var(--accent-light);text-decoration:none;background:rgba(99,102,241,0.1);padding:0.4rem 1rem;border-radius:100px;border:1px solid rgba(99,102,241,0.2)">conviviapp.joseluismanzanaresfernandez.es</a>
+      <a href="https://github.com/Joselumanfer10/conviviapp-2.0" target="_blank" style="font-size:0.82rem;color:var(--accent-light);text-decoration:none;background:rgba(99,102,241,0.1);padding:0.4rem 1rem;border-radius:100px;border:1px solid rgba(99,102,241,0.2)">GitHub</a>
+    </div>
+    <div class="anim" style="margin-top:0.5rem">
       <img src="screenshots/autor.png" alt="Jose Luis Manzanares" class="portrait" style="width:80px;height:80px;border-color:var(--accent-light)">
     </div>
     <h2 class="anim" style="font-size:clamp(2rem,4vw,3rem)">
@@ -798,7 +859,7 @@ p, li { font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.6; color: var(--
 <!-- Navigation -->
 <div class="nav-controls">
   <button class="nav-btn" id="prevBtn" aria-label="Anterior">◀</button>
-  <div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">23</span></div>
   <button class="nav-btn" id="nextBtn" aria-label="Siguiente">▶</button>
 </div>
 

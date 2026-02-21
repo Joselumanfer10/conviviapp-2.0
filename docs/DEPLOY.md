@@ -279,17 +279,29 @@ docker logs conviviapp-client -f
 
 ## Checklist de Despliegue
 
-- [ ] Secretos JWT generados y configurados
-- [ ] PostgreSQL funcionando
-- [ ] Redis funcionando
-- [ ] Migraciones ejecutadas
-- [ ] SSL/HTTPS configurado
-- [ ] CORS configurado correctamente
-- [ ] Variables de entorno verificadas
-- [ ] Auto-deploy activado
-- [ ] Dominio DNS configurado
-- [ ] Health checks pasando
+- [x] Secretos JWT generados y configurados
+- [x] PostgreSQL funcionando
+- [x] Redis funcionando
+- [x] Migraciones ejecutadas
+- [x] SSL/HTTPS configurado (Let's Encrypt)
+- [x] CORS configurado correctamente
+- [x] Variables de entorno verificadas
+- [x] Auto-deploy activado
+- [x] Dominio DNS configurado
+- [x] Health checks pasando
 
 ---
 
-> **Última actualización:** 2025-02-05
+## URLs de Produccion
+
+| Servicio | URL |
+|----------|-----|
+| Frontend | https://conviviapp.joseluismanzanaresfernandez.es |
+| Backend API | https://conviviapp-api.joseluismanzanaresfernandez.es |
+| Health Check | https://conviviapp-api.joseluismanzanaresfernandez.es/health |
+
+**Codigo de invitacion para pruebas:** `CNPMNMG8` (casa con datos de ejemplo)
+
+---
+
+> **Ultima actualizacion:** 2026-02-21
