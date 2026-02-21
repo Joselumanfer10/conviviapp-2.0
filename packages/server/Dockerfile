@@ -3,8 +3,8 @@
 # ============================================
 
 # Stage 1: Dependencies
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat openssl
+FROM node:20-slim AS deps
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
@@ -21,8 +21,8 @@ COPY packages/server/prisma ./packages/server/prisma
 RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
-RUN apk add --no-cache openssl
+FROM node:20-slim AS builder
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
@@ -53,13 +53,15 @@ RUN pnpm --filter @conviviapp/server deploy /app/deploy --prod
 RUN cp -r /app/packages/server/dist /app/deploy/dist
 RUN cp -r /app/packages/server/prisma /app/deploy/prisma
 
-# Regenerar Prisma Client dentro del deploy usando el CLI del builder (v5.22.0)
-WORKDIR /app/deploy
-RUN node /app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma
+# Copiar Prisma client generado al deploy
+RUN set -e && \
+    SRC=$(ls -d /app/node_modules/.pnpm/@prisma+client@*/node_modules/.prisma) && \
+    DEST=$(ls -d /app/deploy/node_modules/.pnpm/@prisma+client@*/node_modules/) && \
+    cp -r "$SRC" "$DEST"
 
 # Stage 3: Runner
-FROM node:20-alpine AS runner
-RUN apk add --no-cache dumb-init openssl
+FROM node:20-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
