@@ -55,7 +55,7 @@ RUN cp -r /app/packages/server/prisma /app/deploy/prisma
 
 # Regenerar Prisma Client dentro del deploy usando el CLI del builder (v5.22.0)
 WORKDIR /app/deploy
-RUN /app/node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
+RUN node /app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma
 
 # Stage 3: Runner
 FROM node:20-alpine AS runner
