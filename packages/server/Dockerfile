@@ -48,8 +48,7 @@ RUN pnpm build
 WORKDIR /app
 RUN pnpm --filter @conviviapp/server deploy /app/deploy --prod
 
-# Copiar Prisma client generado y dist al deploy
-RUN cp -r /app/packages/server/node_modules/.prisma /app/deploy/node_modules/.prisma
+# Copiar dist y prisma al deploy (prisma client ya generado por postinstall del deploy)
 RUN cp -r /app/packages/server/dist /app/deploy/dist
 RUN cp -r /app/packages/server/prisma /app/deploy/prisma
 
