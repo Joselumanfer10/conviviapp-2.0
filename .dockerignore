@@ -21,6 +21,9 @@ node_modules
 
 # Documentation
 docs
+!docs/PRESENTACION.html
+!docs/screenshots
+!docs/Dockerfile
 *.md
 !packages/*/README.md
 
