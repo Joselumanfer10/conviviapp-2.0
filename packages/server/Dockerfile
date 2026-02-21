@@ -45,6 +45,10 @@ WORKDIR /app/packages/server
 RUN pnpm prisma:generate
 RUN pnpm build
 
+# DEBUG: Ver qué engine se generó
+RUN echo "=== ENGINE FILES IN BUILDER ===" && \
+    ls -la /app/node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/libquery_engine* || echo "No engine found in builder"
+
 # Crear paquete standalone con pnpm deploy (resuelve symlinks)
 WORKDIR /app
 RUN pnpm --filter @conviviapp/server deploy /app/deploy --prod
@@ -58,6 +62,10 @@ RUN set -e && \
     SRC=$(ls -d /app/node_modules/.pnpm/@prisma+client@*/node_modules/.prisma) && \
     DEST=$(ls -d /app/deploy/node_modules/.pnpm/@prisma+client@*/node_modules/) && \
     cp -r "$SRC" "$DEST"
+
+# DEBUG: Ver qué engine hay en deploy
+RUN echo "=== ENGINE FILES IN DEPLOY ===" && \
+    ls -la /app/deploy/node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/libquery_engine* || echo "No engine found in deploy"
 
 # Stage 3: Runner
 FROM node:20-slim AS runner
@@ -75,6 +83,13 @@ RUN adduser --system --uid 1001 expressjs
 COPY --from=builder /app/deploy/node_modules ./node_modules
 COPY --from=builder /app/deploy/dist ./dist
 COPY --from=builder /app/deploy/prisma ./prisma
+
+# Regenerar Prisma Client en el runner para asegurar engine correcto
+RUN npx prisma@5.22.0 generate --schema=./prisma/schema.prisma
+
+# DEBUG: Ver engine final en runner
+RUN echo "=== ENGINE FILES IN RUNNER ===" && \
+    find /app/node_modules -name "libquery_engine*" -type f 2>/dev/null || echo "No engine found in runner"
 
 USER expressjs
 
