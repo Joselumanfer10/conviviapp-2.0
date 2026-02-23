@@ -314,7 +314,7 @@ Formato de commits: `tipo: descripcion en imperativo` (espanol, ~50 chars)
 
 ## Licencia
 
-MIT
+Este proyecto esta bajo la licencia [MIT](LICENSE).
 
 ---
 
